@@ -168,6 +168,7 @@ void parsefen(Position *pos, std::string ofen) {
 	pos->BcastleKS = 0;
 	pos->BcastleQS = 0;
 	
+	int numtokens;
 	
 	std::string line, intermediate;
 	//std::string intermediate; 
@@ -182,6 +183,7 @@ void parsefen(Position *pos, std::string ofen) {
 	// Tokenizing w.r.t. space ' ' 
 	while(getline(check1, intermediate, ' ')) 
 	{ 
+		numtokens++;
 		tokens.push_back(intermediate); 
 	} 
 	
@@ -280,15 +282,23 @@ void parsefen(Position *pos, std::string ofen) {
 		else if (tokens[2][i] == 'q') pos->BcastleQS = 1;
 	}
 
-	if (tokens[3] != "-") {
+	if (numtokens >= 4 && tokens[3] != "-") {
 		//en passant square given
 		pos->epsquare = strsquaretoidx(tokens[3]);
 	}
+	else pos->epsquare = -1;
 
-	pos->halfmoves = std::stoi(tokens[4]);
-	if (tokens[4][0] == '-') pos->halfmoves = 0;
-	//posstack[0] = *pos;
-	//posstackend = 1;
-	//movestackend = 0;
+	//std::cout << numtokens << "\n";
+	if (numtokens < 5 || tokens[4] == "-") pos->halfmoves = 0;
+	else pos->halfmoves = std::stoi(tokens[4]);
+	pos->irrevidx = 0;
+	pos->irrev[pos->irrevidx].epsquare = pos->epsquare;
+	pos->irrev[pos->irrevidx].WcastleQS = pos->WcastleQS;
+	pos->irrev[pos->irrevidx].WcastleKS = pos->WcastleKS;
+	pos->irrev[pos->irrevidx].BcastleQS = pos->BcastleQS;
+	pos->irrev[pos->irrevidx].WcastleKS = pos->BcastleKS;
+	pos->irrev[pos->irrevidx].Wcastled = pos->Wcastled;
+	pos->irrev[pos->irrevidx].Bcastled = pos->Bcastled;
+	pos->irrev[pos->irrevidx].halfmoves = pos->halfmoves;
 	 
 }

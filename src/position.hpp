@@ -10,6 +10,8 @@ typedef unsigned long long U64;
 #define MATE_SCORE 9999
 #define NO_SCORE 10000
 
+void initLookups();
+
 enum PIECE{ PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, NONE };
 
 enum SQUARE{A1,B1,C1,D1,E1,F1,G1,H1,
@@ -21,7 +23,19 @@ enum SQUARE{A1,B1,C1,D1,E1,F1,G1,H1,
 			A7,B7,C7,D7,E7,F7,G7,H7,
 			A8,B8,C8,D8,E8,F8,G8,H8};
 
-
+class Irreversible {
+public:
+	int epsquare;
+	int WcastleQS;
+	int WcastleKS;
+	int BcastleKS;
+	int BcastleQS;
+	int Wcastled;
+	int Bcastled;
+	int halfmoves;
+	int Wkingpos;
+	int Bkingpos;
+};
 class Position {
 public:
 	U64 pieces[6];
@@ -36,13 +50,17 @@ public:
 	int WcastleKS;
 	int BcastleQS;
 	int BcastleKS;
+	int Wcastled;
+	int Bcastled;
+	Irreversible irrev[2048];
+	int irrevidx;
 };
 void dspBB(U64 BB);
 int fileranktosquareidx(int file,int rank);
 int getrank(int square);
 int getfile(int square);
 char getPiece(Position *pos, int sq);
-int strsquaretoidx(char square[]);
+int strsquaretoidx(std::string square);
 int getColour(Position *pos, int sq);
 void setPiece(Position *pos, int sq, int colour, char piece);
 void dspBoard(Position *pos);

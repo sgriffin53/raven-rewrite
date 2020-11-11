@@ -4,9 +4,13 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "move.hpp"
+#include "makemove.hpp"
+#include "tests.hpp"
 
 void UCI_Listen() {
 	Position pos;
+	parsefen(&pos,"startpos");
 	bool keeprunning = true;
 	while (keeprunning) {
 		std::string line, intermediate;
@@ -39,6 +43,17 @@ void UCI_Listen() {
 		else if (tokens[0] == "board") {
 			dspBoard(&pos);
 		}
+		else if (tokens[0] == "test") {
+			std::cout << "Running tests.\n";
+			testMakeMove();
+		}
+		else if (numtokens >= 2 && tokens[0] == "moves") {
+			for (int i = 1;i < numtokens;i++) {
+				std::cout << "making move " << tokens[i] << "\n";
+				// make move
+				makeMovestr(tokens[i], &pos);
+			}
+		}
 		else if (numtokens >= 2 && tokens[0] == "position") {
 			if (tokens[1] == "startpos") {
 				parsefen(&pos,"startpos");
@@ -47,6 +62,7 @@ void UCI_Listen() {
 					for (int i = 3;i < numtokens;i++) {
 						std::cout << "making move " << tokens[i] << "\n";
 						// make move
+						
 					}
 				}
 				 
