@@ -1,6 +1,6 @@
-#ifndef MOVE_H
-#define MOVE_H
-#include "move.h"
+#include "move.hpp"
+#include <string>
+#include "position.hpp"
 std::string movetostr(Move move) {
 	std::string returnstring;
 	char startsquarefile = (char)(getfile(move.from) + 97);
@@ -20,4 +20,3 @@ std::string movetostr(Move move) {
 	returnstring += prom;
 	return returnstring;
 }
-#endif
