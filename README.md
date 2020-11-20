@@ -1,2 +1,4 @@
 # raven-rewrite
-C++ rewrite of Raven chess engine
+# crash-on-flto-static branch
+
+Crashes when compiled with -flto and -static
