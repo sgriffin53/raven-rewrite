@@ -5,6 +5,7 @@
 #include <sstream>
 #include <cstring>
 #include "position.hpp"
+#include "attacks.hpp"
 
 int fileranktosquareidx(int file,int rank) {
 	return (rank) * 8 + file;
@@ -47,7 +48,7 @@ void setPiece(Position *pos, int sq, int colour, char piece) {
 	assert(sq >= 0 && sq <= 63);
 	U64 BBsquare = (1ULL << sq);
 	//clear bitboard of old square
-	char oldpiece = getPiece(pos,sq);
+	int oldpiece = getPiece(pos,sq);
 	pos->pieces[oldpiece] &= ~BBsquare;
 	//clear white and black piece bitboards of that square
 	pos->colours[WHITE] &= ~BBsquare;
@@ -57,11 +58,15 @@ void setPiece(Position *pos, int sq, int colour, char piece) {
 		if (colour == WHITE) pos->Wkingpos = sq;
 		else if (colour == BLACK) pos->Bkingpos = sq;
 	}
-	if (colour == WHITE) {
-		pos->colours[WHITE] |= BBsquare;
-	}
-	else if (colour == BLACK) pos->colours[BLACK] |= BBsquare;
+	pos->colours[colour] |= BBsquare;
 	
+}
+void clearSquare(Position *pos, int sq) {
+	// clears a square of a given piece
+	pos->colours[WHITE] &= ~(1ULL << sq);
+	pos->colours[BLACK] &= ~(1ULL << sq);
+	int oldpiece = getPiece(pos,sq);
+	pos->pieces[oldpiece] &= ~(1ULL << sq);
 }
 void dspBB(U64 BB) {
 	
@@ -143,8 +148,8 @@ void dspBoard(Position *pos) {
 	std::cout << "\n";
 	//std::cout << "Hash: %"PRIu64,generateHash(pos));
 	//std::cout << "\n");
-	//std::cout << "In check: %d",isCheck(pos));
-	//std::cout << "\n");
+	std::cout << "In check: " << isCheck(pos);
+	std::cout << "\n";
 }
 
 
@@ -296,9 +301,10 @@ void parsefen(Position *pos, std::string ofen) {
 	pos->irrev[pos->irrevidx].WcastleQS = pos->WcastleQS;
 	pos->irrev[pos->irrevidx].WcastleKS = pos->WcastleKS;
 	pos->irrev[pos->irrevidx].BcastleQS = pos->BcastleQS;
-	pos->irrev[pos->irrevidx].WcastleKS = pos->BcastleKS;
+	pos->irrev[pos->irrevidx].BcastleKS = pos->BcastleKS;
 	pos->irrev[pos->irrevidx].Wcastled = pos->Wcastled;
 	pos->irrev[pos->irrevidx].Bcastled = pos->Bcastled;
 	pos->irrev[pos->irrevidx].halfmoves = pos->halfmoves;
-	 
+	pos->irrev[pos->irrevidx].Wkingpos = pos->Wkingpos;
+	pos->irrev[pos->irrevidx].Bkingpos = pos->Bkingpos;
 }

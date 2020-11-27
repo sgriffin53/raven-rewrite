@@ -1,6 +1,5 @@
 #ifndef POSITION_H
 #define POSITION_H
-
 #include <string>
 
 typedef unsigned long long U64;
@@ -63,6 +62,7 @@ char getPiece(Position *pos, int sq);
 int strsquaretoidx(std::string square);
 int getColour(Position *pos, int sq);
 void setPiece(Position *pos, int sq, int colour, char piece);
+void clearSquare(Position *pos, int sq);
 void dspBoard(Position *pos);
 void parsefen(Position *pos, std::string ofen);
 #endif

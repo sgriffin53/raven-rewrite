@@ -11,10 +11,10 @@ class Move {
 public:
 	int from;
 	int to;
-	char prom;
-	char piece;
-	char cappiece;
-	char type;
+	int prom;
+	int piece;
+	int cappiece;
+	int type;
 };
 std::string movetostr(Move move);
 

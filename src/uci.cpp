@@ -3,15 +3,26 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <time.h>
 #include <vector>
+
+#include "perft.hpp"
+
 #include "move.hpp"
 #include "makemove.hpp"
 #include "tests.hpp"
-
+#include "bitboards.hpp"
+#include "attacks.hpp"
+#include "movegen.hpp"
 void UCI_Listen() {
+	std::string lastmove;
+	int lastcap;
 	Position pos;
 	parsefen(&pos,"startpos");
 	bool keeprunning = true;
+	//movestackidx = 0;
+	//capstackidx = 0;
+	Move move = {.from=E2,.to=E4,.prom=NONE,.piece=PAWN,.cappiece=NONE,.type=DOUBLE};
 	while (keeprunning) {
 		std::string line, intermediate;
 		
@@ -47,15 +58,68 @@ void UCI_Listen() {
 			std::cout << "Running tests.\n";
 			testMakeMove();
 		}
-		else if (numtokens >= 2 && tokens[0] == "moves") {
+		else if (numtokens >= 2 && tokens[0] == "perft") {
+			int depth;
+			U64 pnodes;
+			U64 nps;
+			depth = stoi(tokens[1]);
+			movestackidx = 0;
+			capstackidx = 0;
+			for (int i = 1;i <= depth;i++) {
+				clock_t begin = clock();
+				pnodes = perft(&pos,i);
+				clock_t end = clock();
+				double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+				nps = pnodes / time_spent;
+				if (time != 0 && pnodes != 0) {
+					std::cout << "info depth " << i << " nodes " << pnodes << " time " << (int)(1000 * time_spent) << " nps " << nps << "\n";
+				}
+				else {
+					std::cout << "info depth " << i << " nodes " << pnodes << " time " << (int)(1000 * time_spent) << "\n";
+				}
+			}
+
+			//printf("nodes %" PRIu64 "\n", pnodes);
+			std::cout << "nodes " << pnodes << "\n";
+		}
+		else if (numtokens >= 2 && tokens[0] == "sperft") {
+			int depth = stoi(tokens[1]);
+			sperft(&pos,depth);
+		}
+		else if (tokens[0] == "legalmoves") {
+			Move moves[MAX_MOVES];
+			int num_moves = genMoves(&pos,moves, 0);
+			int j;
+			std::cout << num_moves << " num moves\n";
+			std::cout << "--\n";
+			for (j = 0;j < num_moves;j++) {
+				std::cout << j << " - " << movetostr(moves[j]) << "\n";
+			}
+		}
+		else if (numtokens >= 2 && (tokens[0] == "moves" || tokens[0] == "move")) {
 			for (int i = 1;i < numtokens;i++) {
 				std::cout << "making move " << tokens[i] << "\n";
 				// make move
+				std::string capsquare = "";
+				capsquare+= tokens[i][2];
+				capsquare+= tokens[i][3];
+				lastcap = getPiece(&pos, strsquaretoidx(capsquare));
 				makeMovestr(tokens[i], &pos);
+				lastmove = tokens[i];
+				
 			}
 		}
+		else if (tokens[0] == "unmove") {
+			//unmakeMovestr(movetostr(movestack[movestackidx-1]), &pos, capstack[capstackidx]);
+		}
+		else if (tokens[0] == "movehist") {
+			//std::cout << movestackidx;
+			//for (int j = 0;j < movestackidx;j++) {
+			//	std::cout << movetostr(movestack[j]) << " "; 
+			//}
+		}
 		else if (numtokens >= 2 && tokens[0] == "position") {
-			if (tokens[1] == "startpos") {
+			if (tokens[1] == "startpos") { // position startpos
 				parsefen(&pos,"startpos");
 				
 				if (numtokens > 3 && tokens[2] == "moves") {
@@ -67,7 +131,7 @@ void UCI_Listen() {
 				}
 				 
 			}
-			else if (numtokens >= 3 && tokens[1] == "fen") {
+			else if (numtokens >= 3 && tokens[1] == "fen") { // position fen
 				// parse position from fen
 				std::string fen = "";
 				bool readingfen = true;
