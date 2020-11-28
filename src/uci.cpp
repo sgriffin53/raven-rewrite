@@ -7,13 +7,17 @@
 #include <vector>
 
 #include "perft.hpp"
-
+#include "misc.hpp"
 #include "move.hpp"
 #include "makemove.hpp"
 #include "tests.hpp"
 #include "bitboards.hpp"
 #include "attacks.hpp"
 #include "movegen.hpp"
+#include "eval.hpp"
+#include "search.hpp"
+#include "globals.hpp"
+
 void UCI_Listen() {
 	std::string lastmove;
 	int lastcap;
@@ -48,6 +52,9 @@ void UCI_Listen() {
 			//std::cout << "option name Hash type spin default 32 min 32 max 256\n";
 			std::cout << "uciok\n";
 		}
+		else if (tokens[0] == "isready") {
+			std::cout << "readyok\n";
+		}
 		else if (tokens[0] == "quit") {
 			keeprunning = false;
 		}
@@ -58,11 +65,55 @@ void UCI_Listen() {
 			std::cout << "Running tests.\n";
 			testMakeMove();
 		}
+		else if (tokens[0] == "eval") {
+			std::cout << "eval: " << taperedEval(&pos) << "\n";
+		}
+		else if (tokens[0] == "go") {
+
+			int searchdepth = 100;
+			//movetime = 2147483646;
+			int movetime = INT_MAX / 100;
+
+			if (numtokens >= 3 && tokens[1] == "depth") {
+				searchdepth = std::stoi(tokens[2]);
+			}
+			assert(searchdepth >= 1);
+			int strictmovetime = 0;
+			wtime = -1;
+			btime = -1;
+			movestogo = 40;
+			for (int i = 1;i < numtokens;i++) {
+				if (tokens[i] == "wtime") {
+					wtime = std::stoi(tokens[i+1]);
+				}
+				if (tokens[i] == "btime") {
+					btime = std::stoi(tokens[i+1]);
+				}
+				if (tokens[i] == "movestogo") {
+					movestogo = std::stoi(tokens[i+1]);
+				}
+			}
+			if (pos.tomove == WHITE) {
+				if (wtime != -1) movetime = wtime / min(25, max(2, movestogo));
+			}
+			else {
+				if (btime != -1) movetime = btime / min(25, max(2, movestogo));
+			}
+			if (numtokens >= 3 && tokens[1] == "movetime") {
+				movetime = std::stoi(tokens[2]) * .95;
+				strictmovetime = 1;
+			}
+
+			nodesSearched = 0;
+
+			search(pos,searchdepth,movetime, strictmovetime);
+			//randmove(pos); // for random moves
+		}
 		else if (numtokens >= 2 && tokens[0] == "perft") {
 			int depth;
 			U64 pnodes;
 			U64 nps;
-			depth = stoi(tokens[1]);
+			depth = std::stoi(tokens[1]);
 			movestackidx = 0;
 			capstackidx = 0;
 			for (int i = 1;i <= depth;i++) {
@@ -71,7 +122,7 @@ void UCI_Listen() {
 				clock_t end = clock();
 				double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 				nps = pnodes / time_spent;
-				if (time != 0 && pnodes != 0) {
+				if (nps != 0) {
 					std::cout << "info depth " << i << " nodes " << pnodes << " time " << (int)(1000 * time_spent) << " nps " << nps << "\n";
 				}
 				else {
@@ -83,7 +134,7 @@ void UCI_Listen() {
 			std::cout << "nodes " << pnodes << "\n";
 		}
 		else if (numtokens >= 2 && tokens[0] == "sperft") {
-			int depth = stoi(tokens[1]);
+			int depth = std::stoi(tokens[1]);
 			sperft(&pos,depth);
 		}
 		else if (tokens[0] == "legalmoves") {
@@ -124,9 +175,9 @@ void UCI_Listen() {
 				
 				if (numtokens > 3 && tokens[2] == "moves") {
 					for (int i = 3;i < numtokens;i++) {
-						std::cout << "making move " << tokens[i] << "\n";
+						//std::cout << "making move " << tokens[i] << "\n";
 						// make move
-						
+						makeMovestr(tokens[i], &pos);
 					}
 				}
 				 
@@ -139,8 +190,9 @@ void UCI_Listen() {
 					// loop over remaining tokens
 					if (!readingfen) {
 						// read moves list
-						std::cout << "making move " << tokens[i] << "\n";
+						//std::cout << "making move " << tokens[i] << "\n";
 						// make move
+						makeMovestr(tokens[i], &pos);
 					}
 					
 					if (tokens[i] == "moves") {
