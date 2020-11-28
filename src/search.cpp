@@ -30,6 +30,42 @@ int outOfTime(clock_t endtime) {
 	return 0;
 }
 
+int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
+	if (ply > seldepth) {
+		seldepth = ply;
+	}
+	if (outOfTime(endtime)) {
+		return NO_SCORE;
+	}
+	int standpat = taperedEval(pos);
+	if (standpat >= beta) return beta;
+	if (alpha < standpat) alpha = standpat;
+	Move moves[128]; // 74 max captures + 21 max promotions rounded to nearest 2^x
+	int num_moves = genMoves(pos, moves, 1);
+	for (int i = 0;i < num_moves;i++) {
+		makeMove(&moves[i],pos);
+		pos->tomove = !pos->tomove;
+		if (isCheck(pos)) {
+			pos->tomove = !pos->tomove;
+			unmakeMove(&moves[i], pos);
+			continue;
+		}
+		pos->tomove = !pos->tomove;
+		nodesSearched++;
+		//if (nodesSearched % 1000 == 0) std::cout << nodesSearched << "\n";
+		const int score = -qSearch(pos, -beta, -alpha, ply + 1, endtime);
+		unmakeMove(&moves[i], pos);
+		if (score == -NO_SCORE) return NO_SCORE;
+		if (score >= beta) {
+			return beta;
+		}
+		if (score > alpha) {
+			alpha = score;
+		}
+	}
+	return alpha;
+}
+
 int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, int ply, Move *pv, clock_t endtime, int cut) {
 	if (ply > seldepth) seldepth = ply;
 	if (outOfTime(endtime)) {
@@ -39,7 +75,8 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	if (depthleft <= 0) {
 		//dspBoard(pos);
 		//std::cout << "eval: " << taperedEval(pos) << "\n";
-		return taperedEval(pos);
+		//return taperedEval(pos);
+		return qSearch(pos, alpha, beta, ply + 1, endtime);
 	}
 	if (pos->halfmoves >= 100) return 0;
 	if (isInsufficientMaterial(pos)) return 0;
