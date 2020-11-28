@@ -52,7 +52,6 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 		}
 		pos->tomove = !pos->tomove;
 		nodesSearched++;
-		//if (nodesSearched % 1000 == 0) std::cout << nodesSearched << "\n";
 		const int score = -qSearch(pos, -beta, -alpha, ply + 1, endtime);
 		unmakeMove(&moves[i], pos);
 		if (score == -NO_SCORE) return NO_SCORE;
@@ -71,21 +70,56 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	if (outOfTime(endtime)) {
 		return NO_SCORE;
 	}
+	int incheck = isCheck(pos);
 	// TODO: draw detection
 	if (depthleft <= 0) {
 		//dspBoard(pos);
 		//std::cout << "eval: " << taperedEval(pos) << "\n";
-		//return taperedEval(pos);
-		return qSearch(pos, alpha, beta, ply + 1, endtime);
+		return taperedEval(pos);
+		//return qSearch(pos, alpha, beta, ply + 1, endtime);
 	}
 	if (pos->halfmoves >= 100) return 0;
 	if (isInsufficientMaterial(pos)) return 0;
 	if (isThreefold(pos)) return 0;
+	
+	int staticeval = taperedEval(pos);
+	// null move pruning
+	
+	if (!nullmove && !incheck && ply != 0 && depthleft >= 3 * ONE_PLY && staticeval >= beta) {
+		const int orighalfmoves = pos->halfmoves;
+		const int origepsquare = pos->epsquare;
+		pos->tomove = !pos->tomove;
+		pos->halfmoves = 0;
+		pos->epsquare = -1;
+		pos->irrevidx++;
+		
+		int verR = 3 * ONE_PLY;
+		int R = 2 * ONE_PLY;
+		
+		const int val = -alphaBeta(pos,-beta,-beta+1, depthleft - ONE_PLY - R, 1, ply + 1, pv, endtime, !cut);
+		
+		pos->tomove = !pos->tomove;
+		pos->halfmoves = orighalfmoves;
+		pos->epsquare = origepsquare;
+		pos->irrevidx--;
+		
+		if (val == -NO_SCORE) {
+			return NO_SCORE;
+		}
+		
+		if (val >= beta) {
+			const int verification = alphaBeta(pos,beta - 1,beta, depthleft - ONE_PLY - verR, 1, ply + 1, pv, endtime, !cut); 
+			if (verification == NO_SCORE) {
+				return NO_SCORE;
+			}
+			if (verification >= beta) return beta;
+		}
+		
+	}
 	int bestscore = INT_MIN;
 	Move bestmove;
 	Move moves[MAX_MOVES];
 	int legalmoves = 0;
-	int incheck = isCheck(pos);
 	int num_moves = genMoves(pos, moves, 0);
 	for (int i = 0;i < num_moves;i++) {
 		//Position origpos = *pos;
