@@ -4,6 +4,8 @@
 #include <iostream>
 #include <cassert>
 #include "perft.hpp"
+#include "hash.hpp"
+#include "globals.hpp"
 
 void makeMove(const Move *move, Position *pos) {
 	pos->halfmoves += 1;
@@ -183,10 +185,7 @@ void makeMove(const Move *move, Position *pos) {
 	pos->irrev[pos->irrevidx].halfmoves = pos->halfmoves;
 	pos->irrev[pos->irrevidx].Wkingpos = pos->Wkingpos;
 	pos->irrev[pos->irrevidx].Bkingpos = pos->Bkingpos;
-	//movestack[movestackidx] = *move;
-	//movestackidx++;
-	//capstack[capstackidx] = cappiece;
-	//capstackidx++;
+	pos->hashstack[pos->irrevidx] = generateHash(pos);
 }
 
 void unmakeMove(const Move *move, Position *pos) {

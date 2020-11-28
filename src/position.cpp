@@ -6,6 +6,9 @@
 #include <cstring>
 #include "position.hpp"
 #include "attacks.hpp"
+#include "hash.hpp"
+#include "globals.hpp"
+#include "draw.hpp"
 
 int fileranktosquareidx(int file,int rank) {
 	return (rank) * 8 + file;
@@ -146,10 +149,13 @@ void dspBoard(Position *pos) {
 	std::cout << "\n";
 	std::cout << "Half moves: " << pos->halfmoves;
 	std::cout << "\n";
-	//std::cout << "Hash: %"PRIu64,generateHash(pos));
-	//std::cout << "\n");
+	std::cout << "Hash: " << generateHash(pos);
+	std::cout << "\n";
 	std::cout << "In check: " << isCheck(pos);
 	std::cout << "\n";
+	std::cout << "Is threefold: " << isThreefold(pos);
+	std::cout << "\n";
+	
 }
 
 
@@ -307,4 +313,5 @@ void parsefen(Position *pos, std::string ofen) {
 	pos->irrev[pos->irrevidx].halfmoves = pos->halfmoves;
 	pos->irrev[pos->irrevidx].Wkingpos = pos->Wkingpos;
 	pos->irrev[pos->irrevidx].Bkingpos = pos->Bkingpos;
+	pos->hashstack[pos->irrevidx] = generateHash(pos);
 }

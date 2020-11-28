@@ -8,6 +8,8 @@
 #include "makemove.hpp"
 #include "attacks.hpp"
 #include "tests.hpp"
+#include "draw.hpp"
+#include "hash.hpp"
 
 #define ONE_PLY 4
 #define MAX_MOVES 2048
@@ -39,6 +41,9 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		//std::cout << "eval: " << taperedEval(pos) << "\n";
 		return taperedEval(pos);
 	}
+	if (pos->halfmoves >= 100) return 0;
+	if (isInsufficientMaterial(pos)) return 0;
+	if (isThreefold(pos)) return 0;
 	int bestscore = INT_MIN;
 	Move bestmove;
 	Move moves[MAX_MOVES];
@@ -125,6 +130,9 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 		std::cout << " pv " << movetostr(pv);
 		std::cout << "\n";
 	}
+	time_spentms = getClock() - begin;
+	time_spent = time_spentms / 1000.0;
+	std::cout << "info time " << (int)(time_spent*1000) << "\n";
 	std::cout << "bestmove " << movetostr(bestmove) << "\n";
 	return pv;
 }

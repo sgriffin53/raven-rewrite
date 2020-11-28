@@ -8,6 +8,7 @@ typedef unsigned long long U64;
 #define BLACK 0
 #define MATE_SCORE 9999
 #define NO_SCORE 10000
+#define MAX_PLY 8192
 
 void initLookups();
 
@@ -53,6 +54,7 @@ public:
 	int Bcastled;
 	Irreversible irrev[2048];
 	int irrevidx;
+	U64 hashstack[MAX_PLY];
 };
 void dspBB(U64 BB);
 int fileranktosquareidx(int file,int rank);
