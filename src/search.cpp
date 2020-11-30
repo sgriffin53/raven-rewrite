@@ -10,6 +10,7 @@
 #include "tests.hpp"
 #include "draw.hpp"
 #include "hash.hpp"
+#include "sort.hpp"
 
 #define ONE_PLY 4
 #define MAX_MOVES 2048
@@ -83,6 +84,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	if (isThreefold(pos)) return 0;
 	
 	int staticeval = taperedEval(pos);
+	
 	// null move pruning
 	
 	if (!nullmove && !incheck && ply != 0 && depthleft >= 3 * ONE_PLY && staticeval >= beta) {
@@ -93,7 +95,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		pos->epsquare = -1;
 		pos->irrevidx++;
 		
-		int verR = 3 * ONE_PLY;
+		int verR = 2 * ONE_PLY;
 		int R = 2 * ONE_PLY;
 		
 		const int val = -alphaBeta(pos,-beta,-beta+1, depthleft - ONE_PLY - R, 1, ply + 1, pv, endtime, !cut);
@@ -116,17 +118,21 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		}
 		
 	}
+	
+		 
 	int bestscore = INT_MIN;
 	Move bestmove;
 	Move moves[MAX_MOVES];
 	int legalmoves = 0;
 	int num_moves = genMoves(pos, moves, 0);
+	Move TTmove;
+	sortMoves(pos, moves, num_moves, &TTmove, ply);
 	for (int i = 0;i < num_moves;i++) {
+		
+		int cappiece = moves[i].cappiece;
 		//Position origpos = *pos;
 		makeMove(&moves[i], pos);
-		if (pos->Wkingpos < 0 || pos->Wkingpos > 63 || pos->Bkingpos < 0 || pos->Bkingpos > 63) {
-			dspBoard(pos);
-		}
+		
 		pos->tomove = !pos->tomove;
 		if (isCheck(pos)) {
 			pos->tomove = !pos->tomove;
@@ -136,14 +142,13 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		pos->tomove = !pos->tomove;
 		legalmoves++;
 		nodesSearched++;
+		
+		int givescheck = isCheck(pos);
+		
 		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, !cut);
-		//std::cout << "move: " << movetostr(moves[i]) << " score: " << score << "\n";
+
 		unmakeMove(&moves[i],pos);
-		//Position after = *pos;
-		//if (!posMatch(&origpos, &after)) {
-		//	dspBoard(&origpos);
-		//	std::cout << "move: " << movetostr(moves[i]) << "\n";
-		//}
+		
 		if (score == -NO_SCORE) return NO_SCORE;
 		if (score > bestscore) {
 			bestscore = score;
