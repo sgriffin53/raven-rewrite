@@ -9,7 +9,6 @@
 #include "movegen.hpp"
 #include "makemove.hpp"
 #include "attacks.hpp"
-#include "tests.hpp"
 #include "draw.hpp"
 #include "hash.hpp"
 #include "sort.hpp"
