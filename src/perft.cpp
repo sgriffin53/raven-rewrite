@@ -4,7 +4,6 @@
 #include "makemove.hpp"
 #include "attacks.hpp"
 #include "movegen.hpp"
-#include "tests.hpp"
 #include <iostream>
 
 Move movestack[12];

@@ -11,7 +11,6 @@
 #include "misc.hpp"
 #include "move.hpp"
 #include "makemove.hpp"
-#include "tests.hpp"
 #include "bitboards.hpp"
 #include "attacks.hpp"
 #include "movegen.hpp"
@@ -59,10 +58,6 @@ void UCI_Listen() {
 		}
 		else if (tokens[0] == "board") {
 			dspBoard(&pos);
-		}
-		else if (tokens[0] == "test") {
-			std::cout << "Running tests.\n";
-			testMakeMove();
 		}
 		else if (tokens[0] == "eval") {
 			std::cout << "eval: " << taperedEval(&pos) << "\n";
