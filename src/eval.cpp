@@ -3,7 +3,6 @@
 #include "PST.hpp"
 #include "attacks.hpp"
 #include "globals.hpp"
-#include "misc.hpp"
 #include <cassert>
 #include <iostream>
 
@@ -219,28 +218,28 @@ void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
 	double centremult = 0.5;
 	double hrattackbonus = 1;
 	struct mobreturn WNmobility = Nmobility(pos,WHITE);
-	idx = min(8, max(0, WNmobility.mobility));
+	idx = std::min(8, std::max(0, WNmobility.mobility));
 	*openingEval += knightMgMobility[idx] / 2;
 	*endgameEval += knightEgMobility[idx] / 2;
 	kingattacks +=  WNmobility.kingattacks;
 	kingattackers += WNmobility.kingattackers;
 	
 	struct mobreturn WBmobility = Bmobility(pos,WHITE);
-	idx = min(13, max(0, WBmobility.mobility));
+	idx = std::min(13, std::max(0, WBmobility.mobility));
 	*openingEval += bishopMgMobility[idx] / 2;
 	*endgameEval += bishopEgMobility[idx] / 2;
 	kingattacks += WBmobility.kingattacks;
 	kingattackers += WBmobility.kingattackers;
 	
 	struct mobreturn WRmobility = Rmobility(pos,WHITE);
-	idx = min(14, max(0, WRmobility.mobility));
+	idx = std::min(14, std::max(0, WRmobility.mobility));
 	*openingEval += rookMgMobility[idx] / 2;
 	*endgameEval += rookEgMobility[idx] / 2;
 	kingattacks += 2 * WRmobility.kingattacks;
 	kingattackers += WRmobility.kingattackers;
 	
 	struct mobreturn WQmobility = Qmobility(pos,WHITE);
-	idx = min(27, max(0, WQmobility.mobility));
+	idx = std::min(27, std::max(0, WQmobility.mobility));
 	*openingEval += queenMgMobility[idx] / 2;
 	*endgameEval += queenEgMobility[idx] / 2;
 	kingattacks += 4 * WQmobility.kingattacks;
@@ -258,28 +257,28 @@ void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
 	kingattackers = 0;
 	// black
 	struct mobreturn BNmobility = Nmobility(pos,BLACK);
-	idx = min(8, max(0, BNmobility.mobility));
+	idx = std::min(8, std::max(0, BNmobility.mobility));
 	*openingEval -= knightMgMobility[idx] / 2;
 	*endgameEval -= knightEgMobility[idx] / 2;
 	kingattacks += BNmobility.kingattacks;
 	kingattackers += BNmobility.kingattackers;
 	
 	struct mobreturn BBmobility = Bmobility(pos,BLACK);
-	idx = min(13, max(0, BBmobility.mobility));
+	idx = std::min(13, std::max(0, BBmobility.mobility));
 	*openingEval -= bishopMgMobility[idx] / 2;
 	*endgameEval -= bishopEgMobility[idx] / 2;
 	kingattacks += BBmobility.kingattacks;
 	kingattackers += BBmobility.kingattackers;
 	
 	struct mobreturn BRmobility = Rmobility(pos,BLACK);
-	idx = min(14, max(0, BRmobility.mobility));
+	idx = std::min(14, std::max(0, BRmobility.mobility));
 	*openingEval -= rookMgMobility[idx] / 2;
 	*endgameEval -= rookEgMobility[idx] / 2;
 	kingattacks += 2 * BRmobility.kingattacks;
 	kingattackers += BRmobility.kingattackers;
 	
 	struct mobreturn BQmobility = Qmobility(pos,BLACK);
-	idx = min(27, max(0, BQmobility.mobility));
+	idx = std::min(27, std::max(0, BQmobility.mobility));
 	*openingEval -= queenMgMobility[idx] / 2;
 	*endgameEval -= queenEgMobility[idx] / 2;
 	kingattacks += 4 * BQmobility.kingattacks;
