@@ -8,7 +8,6 @@
 #include <climits>
 
 #include "perft.hpp"
-#include "misc.hpp"
 #include "move.hpp"
 #include "makemove.hpp"
 #include "bitboards.hpp"
@@ -88,10 +87,10 @@ void UCI_Listen() {
 				}
 			}
 			if (pos.tomove == WHITE) {
-				if (wtime != -1) movetime = wtime / min(25, max(2, movestogo));
+				if (wtime != -1) movetime = wtime / std::min(25, std::max(2, movestogo));
 			}
 			else {
-				if (btime != -1) movetime = btime / min(25, max(2, movestogo));
+				if (btime != -1) movetime = btime / std::min(25, std::max(2, movestogo));
 			}
 			if (numtokens >= 3 && tokens[1] == "movetime") {
 				movetime = std::stoi(tokens[2]) * .95;
