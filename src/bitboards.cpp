@@ -1,5 +1,6 @@
 #include "position.hpp"
 #include "bitboards.hpp"
+#include "globals.hpp"
 
 U64 northOne(U64 BB) {
 	return BB << 8;
@@ -35,4 +36,53 @@ U64 noEaOne(U64 BB) {
 }
 U64 noWeOne(U64 BB) {
 	return (BB << 7) & ~BBfileH;
+}
+
+void genLookups() {
+	for (int i = 0; i < 64;i++) {
+		
+		// generate passed pawn lookups
+		
+		// white
+		
+		int rank = getrank(i);
+		U64 BBpiece = (1ULL << i);
+		U64 BBmidsquare = (1ULL << i);
+		U64 BBchecksquares = 0ULL;
+		
+		while (rank < 6) {
+			BBchecksquares |= noWeOne(BBmidsquare);
+			BBchecksquares |= northOne(BBmidsquare);
+			BBchecksquares |= noEaOne(BBmidsquare);
+			BBmidsquare = northOne(BBmidsquare);
+			rank++;
+		}
+		BBpasserLookup[WHITE][i] = BBchecksquares;
+		
+		// black
+		
+		BBmidsquare = (1ULL << i);
+		BBchecksquares = 0ULL;
+		rank = getrank(i);
+		while (rank > 1) {
+			BBchecksquares |= soWeOne(BBmidsquare);
+			BBchecksquares |= southOne(BBmidsquare);
+			BBchecksquares |= soEaOne(BBmidsquare);
+			BBmidsquare = southOne(BBmidsquare);
+			rank--;
+		}
+		BBpasserLookup[BLACK][i] = BBchecksquares;
+		
+		// king fills
+		
+		// pawn shields
+		
+		U64 BBpawnshield = noWeOne(1ULL << i) | northOne(1ULL << i) | noEaOne(1ULL << i);
+		BBpawnshield |= northOne(BBpawnshield);
+		BBpawnshieldLookup[WHITE][i] = BBpawnshield;
+		
+		BBpawnshield = soWeOne(1ULL << i) | southOne(1ULL << i) | soEaOne(1ULL << i);
+		BBpawnshield |= southOne(BBpawnshield);
+		BBpawnshieldLookup[BLACK][i] = BBpawnshield;
+	}
 }

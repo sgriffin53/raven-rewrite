@@ -41,8 +41,10 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 	int standpat = taperedEval(pos);
 	if (standpat >= beta) return beta;
 	if (alpha < standpat) alpha = standpat;
-	Move moves[128]; // 74 max captures + 21 max promotions rounded to nearest 2^x
+	Move moves[128]; // 74 max captures + 21 max promotions rounded up to nearest 2^x
 	int num_moves = genMoves(pos, moves, 1);
+	Move TTmove;
+	sortMoves(pos, moves, num_moves, &TTmove, ply);
 	for (int i = 0;i < num_moves;i++) {
 		makeMove(&moves[i],pos);
 		pos->tomove = !pos->tomove;
@@ -76,8 +78,8 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	if (depthleft <= 0) {
 		//dspBoard(pos);
 		//std::cout << "eval: " << taperedEval(pos) << "\n";
-		return taperedEval(pos);
-		//return qSearch(pos, alpha, beta, ply + 1, endtime);
+		//return taperedEval(pos);
+		return qSearch(pos, alpha, beta, ply + 1, endtime);
 	}
 	if (pos->halfmoves >= 100) return 0;
 	if (isInsufficientMaterial(pos)) return 0;
@@ -118,7 +120,6 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		}
 		
 	}
-	
 		 
 	int bestscore = INT_MIN;
 	Move bestmove;
@@ -142,7 +143,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		pos->tomove = !pos->tomove;
 		legalmoves++;
 		nodesSearched++;
-		
+		if (ply == 0) std::cout << movetostr(moves[i]) << "\n";
 		int givescheck = isCheck(pos);
 		
 		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, !cut);
@@ -163,6 +164,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	}
 	if (legalmoves == 0) {
 		if (incheck) {
+			if (ply == 0) dspBoard(pos);
 			return -MATE_SCORE + ply; // checkmate
 		}
 		else {
@@ -183,7 +185,7 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 	Move bestmove;
 	const clock_t begin = getClock();
 	clock_t endtime = begin + movetime;
-	for (int d = 1;d <= searchdepth;d++) {
+	for (int d = 12;d <= searchdepth;d++) {
 		time_spentms = getClock() - begin;
 		bestmove = pv;
 		score = alphaBeta(&pos, -MATE_SCORE, MATE_SCORE, d * ONE_PLY, 0, 0, &pv, endtime, 0);

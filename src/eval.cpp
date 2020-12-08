@@ -219,30 +219,30 @@ void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
 	double centremult = 0.5;
 	double hrattackbonus = 1;
 	struct mobreturn WNmobility = Nmobility(pos,WHITE);
-	idx = min(8, max(0, WNmobility.mobility - WNmobility.unsafe * 2 + WNmobility.centre * centremult));
-	*openingEval += knightMgMobility[idx];
-	*endgameEval += knightEgMobility[idx];
+	idx = min(8, max(0, WNmobility.mobility));
+	*openingEval += knightMgMobility[idx] / 2;
+	*endgameEval += knightEgMobility[idx] / 2;
 	kingattacks +=  WNmobility.kingattacks;
 	kingattackers += WNmobility.kingattackers;
 	
 	struct mobreturn WBmobility = Bmobility(pos,WHITE);
-	idx = min(13, max(0, WBmobility.mobility - WBmobility.unsafe * 2 + WBmobility.centre * centremult));
-	*openingEval += bishopMgMobility[idx];
-	*endgameEval += bishopEgMobility[idx];
+	idx = min(13, max(0, WBmobility.mobility));
+	*openingEval += bishopMgMobility[idx] / 2;
+	*endgameEval += bishopEgMobility[idx] / 2;
 	kingattacks += WBmobility.kingattacks;
 	kingattackers += WBmobility.kingattackers;
 	
 	struct mobreturn WRmobility = Rmobility(pos,WHITE);
-	idx = min(14, max(0, WRmobility.mobility - WRmobility.unsafe * 2 + WRmobility.centre * centremult));
-	*openingEval += rookMgMobility[idx];
-	*endgameEval += rookEgMobility[idx];
+	idx = min(14, max(0, WRmobility.mobility));
+	*openingEval += rookMgMobility[idx] / 2;
+	*endgameEval += rookEgMobility[idx] / 2;
 	kingattacks += 2 * WRmobility.kingattacks;
 	kingattackers += WRmobility.kingattackers;
 	
 	struct mobreturn WQmobility = Qmobility(pos,WHITE);
-	idx = min(27, max(0, WQmobility.mobility - WQmobility.unsafe * 2 + WQmobility.centre * centremult));
-	*openingEval += queenMgMobility[idx];
-	*endgameEval += queenEgMobility[idx];
+	idx = min(27, max(0, WQmobility.mobility));
+	*openingEval += queenMgMobility[idx] / 2;
+	*endgameEval += queenEgMobility[idx] / 2;
 	kingattacks += 4 * WQmobility.kingattacks;
 	kingattackers += WQmobility.kingattackers;
 	
@@ -258,30 +258,30 @@ void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
 	kingattackers = 0;
 	// black
 	struct mobreturn BNmobility = Nmobility(pos,BLACK);
-	idx = min(8, max(0, BNmobility.mobility - BNmobility.unsafe * 2 + BNmobility.centre * centremult));
-	*openingEval -= knightMgMobility[idx];
-	*endgameEval -= knightEgMobility[idx];
+	idx = min(8, max(0, BNmobility.mobility));
+	*openingEval -= knightMgMobility[idx] / 2;
+	*endgameEval -= knightEgMobility[idx] / 2;
 	kingattacks += BNmobility.kingattacks;
 	kingattackers += BNmobility.kingattackers;
 	
 	struct mobreturn BBmobility = Bmobility(pos,BLACK);
-	idx = min(13, max(0, BBmobility.mobility - BBmobility.unsafe * 2 + BBmobility.centre * centremult));
-	*openingEval -= bishopMgMobility[idx];
-	*endgameEval -= bishopEgMobility[idx];
+	idx = min(13, max(0, BBmobility.mobility));
+	*openingEval -= bishopMgMobility[idx] / 2;
+	*endgameEval -= bishopEgMobility[idx] / 2;
 	kingattacks += BBmobility.kingattacks;
 	kingattackers += BBmobility.kingattackers;
 	
 	struct mobreturn BRmobility = Rmobility(pos,BLACK);
-	idx = min(14, max(0, BRmobility.mobility - BRmobility.unsafe * 2 + BRmobility.centre * centremult));
-	*openingEval -= rookMgMobility[idx];
-	*endgameEval -= rookEgMobility[idx];
+	idx = min(14, max(0, BRmobility.mobility));
+	*openingEval -= rookMgMobility[idx] / 2;
+	*endgameEval -= rookEgMobility[idx] / 2;
 	kingattacks += 2 * BRmobility.kingattacks;
 	kingattackers += BRmobility.kingattackers;
 	
 	struct mobreturn BQmobility = Qmobility(pos,BLACK);
-	idx = min(27, max(0, BQmobility.mobility - BQmobility.unsafe * 2 + BQmobility.centre * centremult));
-	*openingEval -= queenMgMobility[idx];
-	*endgameEval -= queenEgMobility[idx];
+	idx = min(27, max(0, BQmobility.mobility));
+	*openingEval -= queenMgMobility[idx] / 2;
+	*endgameEval -= queenEgMobility[idx] / 2;
 	kingattacks += 4 * BQmobility.kingattacks;
 	kingattackers += BQmobility.kingattackers;
 	
@@ -358,7 +358,7 @@ int taperedEval(Position *pos) {
 	int endgameEval = 0;
 	evalPST(pos, &openingEval, &endgameEval);
 	evalMaterial(pos, &openingEval, &endgameEval);
-	evalPawns(pos, &openingEval, &endgameEval);
+	//evalPawns(pos, &openingEval, &endgameEval);
 	evalMobility(pos, &openingEval, &endgameEval);
 	return finalEval(pos, &openingEval, &endgameEval);
 }
@@ -411,8 +411,6 @@ struct mobreturn Nmobility(Position *pos, int side) {
 	returnstruct.kingattackers = kzattackers;
 	returnstruct.unsafe = __builtin_popcountll(BBmoves & BBattackedbypawns);
 	returnstruct.centre = centre;
-	U64 BBhomerows = BBrank7 | BBrank8;
-	if (pos->tomove == BLACK) BBhomerows = BBrank1 | BBrank2;
 	return returnstruct;
 }
 struct mobreturn Bmobility(Position *pos, int side) {

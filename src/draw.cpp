@@ -11,9 +11,7 @@ int isThreefold(Position *pos) {
 	U64 curposhash = pos->hashstack[pos->irrevidx];
 	if (pos->halfmoves <= 4) return 0;
 	int numrepeats = 0;
-	//std::cout << "start: " << (pos->irrevidx) << " until " << (pos->irrevidx - 1 - pos->halfmoves - 1) << "\n";
 	for (int i = (pos->irrevidx);(i > (pos->irrevidx - 1 - pos->halfmoves - 1)) && i >= 0;i-=2) {
-		//std::cout << "i: " << i << " orig hash: " << curposhash << " this hash: " << pos->hashstack[i] << "\n";
 		if (pos->hashstack[i] == curposhash) {
 			numrepeats++;
 			if (numrepeats >= 3) {

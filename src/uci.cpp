@@ -17,16 +17,14 @@
 #include "eval.hpp"
 #include "search.hpp"
 #include "globals.hpp"
+#include "hash.hpp"
+#include <fstream>
 
 void UCI_Listen() {
-	std::string lastmove;
-	int lastcap;
+	initZobrist();
 	Position pos;
 	parsefen(&pos,"startpos");
 	bool keeprunning = true;
-	//movestackidx = 0;
-	//capstackidx = 0;
-	Move move = {.from=E2,.to=E4,.prom=NONE,.piece=PAWN,.cappiece=NONE,.type=DOUBLE};
 	while (keeprunning) {
 		std::string line, intermediate;
 		
@@ -72,7 +70,7 @@ void UCI_Listen() {
 
 			int searchdepth = 100;
 			//movetime = 2147483646;
-			int movetime = INT_MAX / 100;
+			int movetime = INT_MAX / 2;
 
 			if (numtokens >= 3 && tokens[1] == "depth") {
 				searchdepth = std::stoi(tokens[2]);
@@ -154,10 +152,13 @@ void UCI_Listen() {
 				std::string capsquare = "";
 				capsquare+= tokens[i][2];
 				capsquare+= tokens[i][3];
-				lastcap = getPiece(&pos, strsquaretoidx(capsquare));
 				makeMovestr(tokens[i], &pos);
-				lastmove = tokens[i];
 				
+			}
+		}
+		else if (tokens[0] == "hashstack") {
+			for (int i = 0;i <= pos.irrevidx;i++) {
+				std::cout << "hash at move " << i << ": " << pos.hashstack[i] << "\n";
 			}
 		}
 		else if (tokens[0] == "unmove") {

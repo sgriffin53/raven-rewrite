@@ -33,4 +33,6 @@ U64 knight_attacks(U64 BBpiece);
 U64 rook_attacks(U64 BBpiece, U64 BBocc);
 U64 bishop_attacks(U64 BBpiece, U64 BBocc);
 U64 queen_attacks(U64 BBpiece, U64 BBocc);
+U64 BBkingattacks(U64 BBpiece);
+U64 BBknightattacks(U64 BBpiece);
 #endif

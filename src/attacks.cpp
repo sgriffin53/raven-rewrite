@@ -9,7 +9,7 @@ int isCheck(Position *pos) {
 }
 int isAttacked(Position *pos,int square, int colour) {
 	assert(pos);
-	assert(square >= 0 && square <= 63);
+	//assert(square >= 0 && square <= 63);
 	assert(colour == WHITE || colour == BLACK);
 	// colour is colour of attacking side
 
@@ -115,4 +115,23 @@ U64 bishop_attacks(U64 BBpiece, U64 BBocc) {
 }
 U64 queen_attacks(U64 BBpiece, U64 BBocc) {
 	return libchess::movegen::queen_moves(BBpiece, BBocc);
+}
+U64 BBkingattacks(U64 BBpiece) {
+	// get king attack squares
+	U64 BBattacks = eastOne(BBpiece) | westOne(BBpiece); // east and west one
+	BBpiece |= BBattacks; // set piece BB to attacks
+	BBattacks |= northOne(BBpiece) | southOne(BBpiece); // north, south, nw, ne, sw, se one
+	return BBattacks;
+}
+U64 BBknightattacks(U64 BBpiece) {
+	assert(__builtin_popcountll(BBpiece) >= 0);
+	U64 BBattacks = noNoWe(BBpiece);
+	BBattacks |= noNoEa(BBpiece);
+	BBattacks |= noEaEa(BBpiece);
+	BBattacks |= soEaEa(BBpiece);
+	BBattacks |= soSoEa(BBpiece);
+	BBattacks |= soSoWe(BBpiece);
+	BBattacks |= soWeWe(BBpiece);
+	BBattacks |= noWeWe(BBpiece);
+	return BBattacks;
 }
