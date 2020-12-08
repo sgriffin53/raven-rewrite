@@ -143,7 +143,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		pos->tomove = !pos->tomove;
 		legalmoves++;
 		nodesSearched++;
-		if (ply == 0) std::cout << movetostr(moves[i]) << "\n";
+		//if (ply == 0) std::cout << movetostr(moves[i]) << "\n";
 		int givescheck = isCheck(pos);
 		
 		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, !cut);
@@ -185,7 +185,7 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 	Move bestmove;
 	const clock_t begin = getClock();
 	clock_t endtime = begin + movetime;
-	for (int d = 12;d <= searchdepth;d++) {
+	for (int d = 1;d <= searchdepth;d++) {
 		time_spentms = getClock() - begin;
 		bestmove = pv;
 		score = alphaBeta(&pos, -MATE_SCORE, MATE_SCORE, d * ONE_PLY, 0, 0, &pv, endtime, 0);
