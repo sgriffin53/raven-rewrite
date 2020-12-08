@@ -5,6 +5,7 @@
 #include <sstream>
 #include <time.h>
 #include <vector>
+#include <climits>
 
 #include "perft.hpp"
 #include "misc.hpp"

@@ -3,6 +3,8 @@
 #include "move.hpp"
 #include <ctime>
 #include <iostream>
+#include <climits>
+
 #include "globals.hpp"
 #include "movegen.hpp"
 #include "makemove.hpp"
