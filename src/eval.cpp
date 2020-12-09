@@ -2,7 +2,6 @@
 #include "position.hpp"
 #include "PST.hpp"
 #include "attacks.hpp"
-#include "globals.hpp"
 #include <cassert>
 #include <iostream>
 

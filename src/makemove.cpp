@@ -5,7 +5,6 @@
 #include <cassert>
 #include "perft.hpp"
 #include "hash.hpp"
-#include "globals.hpp"
 
 void makeMove(const Move *move, Position *pos) {
 	pos->halfmoves += 1;
