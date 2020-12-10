@@ -65,7 +65,7 @@ void UCI_Listen() {
 
 			int searchdepth = 100;
 			//movetime = 2147483646;
-			int movetime = INT_MAX / 2;
+			int movetime = INT_MAX / 100;
 
 			if (numtokens >= 3 && tokens[1] == "depth") {
 				searchdepth = std::stoi(tokens[2]);
