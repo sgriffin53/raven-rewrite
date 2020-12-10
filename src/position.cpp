@@ -7,7 +7,6 @@
 #include "position.hpp"
 #include "attacks.hpp"
 #include "hash.hpp"
-#include "globals.hpp"
 #include "draw.hpp"
 
 int fileranktosquareidx(int file,int rank) {

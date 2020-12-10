@@ -1,6 +1,8 @@
 #include "position.hpp"
 #include "bitboards.hpp"
-#include "globals.hpp"
+
+U64 BBpasserLookup[2][64];
+U64 BBpawnshieldLookup[2][64];
 
 U64 northOne(U64 BB) {
 	return BB << 8;

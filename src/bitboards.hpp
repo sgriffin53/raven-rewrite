@@ -105,4 +105,8 @@ U64 soEaOne(U64 BB);
 U64 soWeOne(U64 BB);
 U64 noEaOne(U64 BB);
 U64 noWeOne(U64 BB);
+
+extern U64 BBpasserLookup[2][64];
+extern U64 BBpawnshieldLookup[2][64];
+
 #endif
