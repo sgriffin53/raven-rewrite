@@ -126,6 +126,9 @@ const int arrCenterManhattanDistance[64] = { // char is sufficient as well, also
 int piecevalues[7] = { 110, 300, 300, 525, 900, 9999, 0 };
 
 void evalMaterial(Position *pos, int *openingEval, int *endgameEval) {
+	assert(pos);
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 	int num_BP = __builtin_popcountll(pos->colours[BLACK] & pos->pieces[PAWN]);
 	int num_BN = __builtin_popcountll(pos->colours[BLACK] & pos->pieces[KNIGHT]);
 	int num_BB = __builtin_popcountll(pos->colours[BLACK] & pos->pieces[BISHOP]);
@@ -152,12 +155,17 @@ void evalMaterial(Position *pos, int *openingEval, int *endgameEval) {
 
     *openingEval += white_pieces - black_pieces;
 	*endgameEval += white_pieces - black_pieces;
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 }
 int pieceval(const char inpiece) {
 	return piecevalues[inpiece];
 }
 
 void evalPawns(Position *pos, int *openingEval, int *endgameEval) {
+	assert(pos);
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 	
 	// Evaluate pawns
 	
@@ -203,9 +211,15 @@ void evalPawns(Position *pos, int *openingEval, int *endgameEval) {
 
 	// pawn shield
 	
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
+	
 }
 
 void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
+	assert(pos);
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 	
 	// Evaluates mobility, king attackers, and NBRQ PST
 	
@@ -290,8 +304,14 @@ void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
 	
 	//*openingEval -= safety_table[kingattackers][kingattacks];
 	//*endgameEval -= safety_table[kingattackers][kingattacks];
+	
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 }
 void evalPST(Position *pos, int *openingEval, int *endgameEval) {
+	assert(pos);
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 	
 	U64 BBpieces = pos->colours[WHITE] | pos->colours[BLACK];
 	
@@ -305,8 +325,14 @@ void evalPST(Position *pos, int *openingEval, int *endgameEval) {
 		*endgameEval += PSTval(col, piece,square,'E');
 	}
 	
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
+	
 }
 int finalEval(Position *pos, int *openingEval, int *endgameEval) {
+	
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 	
 	// get number of pieces for calculating phase for final eval
 	
@@ -346,6 +372,10 @@ int finalEval(Position *pos, int *openingEval, int *endgameEval) {
 	int eval = ((*openingEval * (256 - phase)) + (*endgameEval * phase)) / 256;
 
 	if (pos->tomove == BLACK) eval = -eval;
+
+	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
+	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
+	
 	return eval;
 }
 
