@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iostream>
 #include <climits>
+#include <vector>
 
 #include "globals.hpp"
 #include "movegen.hpp"
@@ -69,7 +70,7 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 	return alpha;
 }
 
-int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, int ply, Move *pv, clock_t endtime, int cut) {
+int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, int ply, Move *pv, clock_t endtime, std::vector<Move>& fullPV, int cut) {
 	if (ply > seldepth) seldepth = ply;
 	if (outOfTime(endtime)) {
 		return NO_SCORE;
@@ -101,7 +102,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		int verR = 2 * ONE_PLY;
 		int R = 2 * ONE_PLY;
 		
-		const int val = -alphaBeta(pos,-beta,-beta+1, depthleft - ONE_PLY - R, 1, ply + 1, pv, endtime, !cut);
+		const int val = -alphaBeta(pos,-beta,-beta+1, depthleft - ONE_PLY - R, 1, ply + 1, pv, endtime, fullPV, !cut);
 		
 		pos->tomove = !pos->tomove;
 		pos->halfmoves = orighalfmoves;
@@ -113,7 +114,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		}
 		
 		if (val >= beta) {
-			const int verification = alphaBeta(pos,beta - 1,beta, depthleft - ONE_PLY - verR, 1, ply + 1, pv, endtime, !cut); 
+			const int verification = alphaBeta(pos,beta - 1,beta, depthleft - ONE_PLY - verR, 1, ply + 1, pv, endtime, fullPV, !cut); 
 			if (verification == NO_SCORE) {
 				return NO_SCORE;
 			}
@@ -121,7 +122,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		}
 		
 	}
-		 
+	
 	int bestscore = INT_MIN;
 	Move bestmove;
 	Move moves[MAX_MOVES];
@@ -130,6 +131,8 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	Move TTmove;
 	sortMoves(pos, moves, num_moves, &TTmove, ply);
 	for (int i = 0;i < num_moves;i++) {
+		
+		std::vector<Move> childPV;
 		
 		int cappiece = moves[i].cappiece;
 		//Position origpos = *pos;
@@ -147,7 +150,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		//if (ply == 0) std::cout << movetostr(moves[i]) << "\n";
 		int givescheck = isCheck(pos);
 		
-		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, !cut);
+		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, childPV, !cut);
 
 		unmakeMove(&moves[i],pos);
 		
@@ -155,6 +158,9 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		if (score > bestscore) {
 			bestscore = score;
 			bestmove = moves[i];
+			fullPV.clear();
+			fullPV.push_back(bestmove);
+			std::copy(childPV.begin(), childPV.end(), back_inserter(fullPV));
 		}
 		if (score > alpha) {
 			alpha = bestscore;
@@ -184,12 +190,14 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 	nodesSearched = 0;
 	seldepth = 0;
 	Move bestmove;
+	std::vector<Move> fullPV;
 	const clock_t begin = getClock();
 	clock_t endtime = begin + movetime;
 	for (int d = 1;d <= searchdepth;d++) {
+		fullPV.clear();
 		time_spentms = getClock() - begin;
 		bestmove = pv;
-		score = alphaBeta(&pos, -MATE_SCORE, MATE_SCORE, d * ONE_PLY, 0, 0, &pv, endtime, 0);
+		score = alphaBeta(&pos, -MATE_SCORE, MATE_SCORE, d * ONE_PLY, 0, 0, &pv, endtime, fullPV, 0);
 		if (d > 1 && score == NO_SCORE) {
 			break;
 		}
@@ -206,7 +214,11 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 			std::cout << " nps " << nps;
 		}
 		std::cout << " score cp " << score;
-		std::cout << " pv " << movetostr(pv);
+		//std::cout << " pv " << movetostr(pv);
+		std::cout << " pv ";
+		for (auto & m :fullPV){  
+			std::cout << movetostr(m) << " ";  
+		}  
 		std::cout << "\n";
 	}
 	time_spentms = getClock() - begin;
