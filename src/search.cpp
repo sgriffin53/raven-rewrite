@@ -147,7 +147,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		pos->tomove = !pos->tomove;
 		legalmoves++;
 		nodesSearched++;
-		//if (ply == 0) std::cout << movetostr(moves[i]) << "\n";
+		pos->hashstack[pos->irrevidx] = generateHash(pos);
 		int givescheck = isCheck(pos);
 		
 		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, childPV, !cut);

@@ -184,7 +184,7 @@ void makeMove(const Move *move, Position *pos) {
 	pos->irrev[pos->irrevidx].halfmoves = pos->halfmoves;
 	pos->irrev[pos->irrevidx].Wkingpos = pos->Wkingpos;
 	pos->irrev[pos->irrevidx].Bkingpos = pos->Bkingpos;
-	pos->hashstack[pos->irrevidx] = generateHash(pos);
+	//pos->hashstack[pos->irrevidx] = generateHash(pos);
 }
 
 void unmakeMove(const Move *move, Position *pos) {
