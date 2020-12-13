@@ -17,6 +17,6 @@ std::string movetostr(Move move) {
 	returnstring += startsquarerank;
 	returnstring += endsquarefile;
 	returnstring += endsquarerank;
-	returnstring += prom;
+	if (prom != 0) returnstring += prom;
 	return returnstring;
 }
