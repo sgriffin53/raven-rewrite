@@ -3,7 +3,6 @@
 #include "move.hpp"
 #include <iostream>
 #include <cassert>
-#include "perft.hpp"
 #include "hash.hpp"
 
 void makeMove(const Move *move, Position *pos) {

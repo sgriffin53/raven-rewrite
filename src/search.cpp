@@ -1,17 +1,17 @@
 #include "search.hpp"
 #include "eval.hpp"
-#include "move.hpp"
+#include "chess/move.hpp"
 #include <ctime>
 #include <iostream>
 #include <climits>
 #include <vector>
 
 #include "globals.hpp"
-#include "movegen.hpp"
-#include "makemove.hpp"
-#include "attacks.hpp"
-#include "draw.hpp"
-#include "hash.hpp"
+#include "chess/movegen.hpp"
+#include "chess/makemove.hpp"
+#include "chess/attacks.hpp"
+#include "chess/draw.hpp"
+#include "chess/hash.hpp"
 #include "sort.hpp"
 
 #define ONE_PLY 4
