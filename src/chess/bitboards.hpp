@@ -1,6 +1,8 @@
 #ifndef BITBOARDS_HPP
 #define BITBOARDS_HPP
 
+#include "position.hpp"
+
 const U64 BBfileA = 0b00000001\
 00000001\
 00000001\
