@@ -1,4 +1,4 @@
-#include "position.hpp"
+#include "chess/position.hpp"
 #include "globals.hpp"
 
 U64 nodesSearched;

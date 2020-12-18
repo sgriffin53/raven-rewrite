@@ -1,8 +1,8 @@
 #ifndef PERFT_HPP
 #define PERFT_HPP
 
-#include "position.hpp"
-#include "move.hpp"
+#include "chess/move.hpp"
+#include "chess/position.hpp"
 
 extern Move movestack[12];
 extern int movestackidx, capstackidx;

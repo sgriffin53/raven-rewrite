@@ -1,9 +1,9 @@
 #include "perft.hpp"
-#include "position.hpp"
-#include "move.hpp"
-#include "makemove.hpp"
-#include "attacks.hpp"
-#include "movegen.hpp"
+#include "chess/position.hpp"
+#include "chess/move.hpp"
+#include "chess/makemove.hpp"
+#include "chess/attacks.hpp"
+#include "chess/movegen.hpp"
 #include <iostream>
 
 Move movestack[12];

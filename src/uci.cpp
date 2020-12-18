@@ -1,5 +1,5 @@
-#include "libchess/src/libchess/movegen.hpp"
-#include "position.hpp"
+#include "chess/libchess/src/libchess/movegen.hpp"
+#include "chess/position.hpp"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -8,15 +8,15 @@
 #include <climits>
 
 #include "perft.hpp"
-#include "move.hpp"
-#include "makemove.hpp"
-#include "bitboards.hpp"
-#include "attacks.hpp"
-#include "movegen.hpp"
+#include "chess/move.hpp"
+#include "chess/makemove.hpp"
+#include "chess/bitboards.hpp"
+#include "chess/attacks.hpp"
+#include "chess/movegen.hpp"
 #include "eval.hpp"
 #include "search.hpp"
 #include "globals.hpp"
-#include "hash.hpp"
+#include "chess/hash.hpp"
 #include <fstream>
 
 void UCI_Listen() {

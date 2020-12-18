@@ -1,7 +1,7 @@
 #ifndef TEST_PERFT_HPP
 #define TEST_PERFT_HPP
 
-#include "../src/position.hpp"
+#include "../src/chess/position.hpp"
 #include "../src/perft.hpp"
 
 #include <string>

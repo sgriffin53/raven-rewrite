@@ -1,7 +1,7 @@
 #include "eval.hpp"
-#include "position.hpp"
+#include "chess/position.hpp"
 #include "PST.hpp"
-#include "attacks.hpp"
+#include "chess/attacks.hpp"
 #include <cassert>
 #include <iostream>
 

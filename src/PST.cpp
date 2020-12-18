@@ -1,5 +1,5 @@
 #include "PST.hpp"
-#include "position.hpp"
+#include "chess/position.hpp"
 
 int PSTval(int colour, const char piece, const int square, const char gamestage) {
 	int stage = 0;
