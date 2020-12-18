@@ -18,7 +18,6 @@ const U64 BBfileF = BBfileA << 5;
 const U64 BBfileG = BBfileA << 6;
 const U64 BBfileH = BBfileA << 7;
 
-				
 const U64 BBfileAB = BBfileA | BBfileB;
 
 const U64 BBfileGH = BBfileG | BBfileH;
@@ -32,13 +31,13 @@ const U64 BBrank1 = 0b00000000\
 00000000\
 11111111;
 
-const U64 BBrank2 = BBrank1 << (8*1);
-const U64 BBrank3 = BBrank1 << (8*2);
-const U64 BBrank4 = BBrank1 << (8*3);
-const U64 BBrank5 = BBrank1 << (8*4);
-const U64 BBrank6 = BBrank1 << (8*5);
-const U64 BBrank7 = BBrank1 << (8*6);
-const U64 BBrank8 = BBrank1 << (8*7);
+const U64 BBrank2 = BBrank1 << (8 * 1);
+const U64 BBrank3 = BBrank1 << (8 * 2);
+const U64 BBrank4 = BBrank1 << (8 * 3);
+const U64 BBrank5 = BBrank1 << (8 * 4);
+const U64 BBrank6 = BBrank1 << (8 * 5);
+const U64 BBrank7 = BBrank1 << (8 * 6);
+const U64 BBrank8 = BBrank1 << (8 * 7);
 
 const U64 BBcentre = 0b00000000\
 00000000\

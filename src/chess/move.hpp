@@ -5,10 +5,10 @@
 
 #define MAX_MOVES 2048
 
-enum MOVETYPE{ NORMAL, DOUBLE, CAPTURE, EN_PASSANT, PROMO, PROMO_CAPTURE , KSC, QSC };
+enum MOVETYPE { NORMAL, DOUBLE, CAPTURE, EN_PASSANT, PROMO, PROMO_CAPTURE, KSC, QSC };
 
 class Move {
-public:
+  public:
 	int from;
 	int to;
 	int prom;

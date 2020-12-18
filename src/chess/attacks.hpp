@@ -1,16 +1,15 @@
 #ifndef ATTACKS_H
 #define ATTACKS_H
 
+#include "bitboards.hpp"
 #include "libchess/src/libchess/movegen.hpp"
 #include "position.hpp"
-#include "bitboards.hpp"
 
-const int BPdirs[2][2] = {{-1,-1},{+1,-1}};
-const int WPdirs[2][2] = {{-1,+1},{+1,+1}};
+const int BPdirs[2][2] = {{-1, -1}, {+1, -1}};
+const int WPdirs[2][2] = {{-1, +1}, {+1, +1}};
 
 int isAttacked(Position *pos, int square, int colour);
 int isCheck(Position *pos);
-
 
 U64 BBpawnSinglePushW(U64 BBwpawns, U64 BBunoccupied);
 U64 BBpawnDoublePushW(U64 BBwpawns, U64 BBunoccupied);
