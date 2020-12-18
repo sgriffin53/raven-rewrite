@@ -10,5 +10,4 @@ extern int capstack[12];
 U64 perft(Position *pos, int depth);
 U64 sperft(Position *pos, int depth);
 
-
 #endif

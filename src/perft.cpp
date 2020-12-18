@@ -1,9 +1,9 @@
-#include "perft.hpp"
-#include "chess/position.hpp"
-#include "chess/move.hpp"
-#include "chess/makemove.hpp"
 #include "chess/attacks.hpp"
+#include "chess/makemove.hpp"
+#include "chess/move.hpp"
 #include "chess/movegen.hpp"
+#include "chess/position.hpp"
+#include "perft.hpp"
 #include <iostream>
 
 Move movestack[12];
@@ -12,18 +12,19 @@ int capstack[12];
 
 U64 perft(Position *pos, int depth) {
 	assert(pos);
-	assert(depth>=0);
+	assert(depth >= 0);
 
-	if (depth == 0) return 1;
+	if (depth == 0)
+		return 1;
 
 	U64 nodes = 0;
 	Move moves[MAX_MOVES];
-	const int n_moves = genMoves(pos,moves, 0);
-	for (int i = 0; i < n_moves;i++) {
-		//Position origpos = *pos;
+	const int n_moves = genMoves(pos, moves, 0);
+	for (int i = 0; i < n_moves; i++) {
+		// Position origpos = *pos;
 		makeMove(&moves[i], pos);
 		pos->tomove = !pos->tomove;
-		
+
 		const int incheck = isCheck(pos);
 		if (incheck) {
 			pos->tomove = !pos->tomove;
@@ -32,19 +33,19 @@ U64 perft(Position *pos, int depth) {
 		}
 		pos->tomove = !pos->tomove;
 		nodes += perft(pos, depth - 1);
-		//Position aftermake = *pos;
+		// Position aftermake = *pos;
 		unmakeMove(&moves[i], pos);
 		/*
 		if (!posMatch(pos, &origpos)) {
-			
+
 			printf("orig pos:\n");
-			 
-			 
+
+
 			std::cout << "move: " << movetostr(moves[i]) << "\n";
 			//std::cout << "move type: " << moves[i].type << "\n";
 			std::cout << "move history: " << movestackidx;
 			for (int j = 0;j < depth;j++) {
-				std::cout << movetostr(movestack[j]) << " "; 
+				std::cout << movetostr(movestack[j]) << " ";
 			}
 			std::cout << "\n";
 			std::cout << "orig pos\n";
@@ -58,7 +59,7 @@ U64 perft(Position *pos, int depth) {
 			dspBB(origpos.colours[WHITE]);
 			std::cout << "after white bb:\n";
 			dspBB(pos->colours[WHITE]);
-			 
+
 		//	return 0;
 		}
 		 */
@@ -69,18 +70,19 @@ U64 perft(Position *pos, int depth) {
 
 U64 sperft(Position *pos, int depth) {
 	assert(pos);
-	assert(depth>=0);
+	assert(depth >= 0);
 
-	if (depth == 0) return 1;
+	if (depth == 0)
+		return 1;
 
 	U64 total_nodes = 0;
 	Move moves[MAX_MOVES];
-	const int n_moves = genMoves(pos,moves, 0);
-	for (int i = 0; i < n_moves;i++) {
-		//Position origpos = *pos;
+	const int n_moves = genMoves(pos, moves, 0);
+	for (int i = 0; i < n_moves; i++) {
+		// Position origpos = *pos;
 		makeMove(&moves[i], pos);
 		pos->tomove = !pos->tomove;
-		
+
 		const int incheck = isCheck(pos);
 		if (incheck) {
 			pos->tomove = !pos->tomove;
@@ -91,7 +93,7 @@ U64 sperft(Position *pos, int depth) {
 		U64 nodes = perft(pos, depth - 1);
 		total_nodes += nodes;
 		std::cout << movetostr(moves[i]) << " - " << nodes << "\n";
-		//Position aftermake = *pos;
+		// Position aftermake = *pos;
 		unmakeMove(&moves[i], pos);
 	}
 	return total_nodes;

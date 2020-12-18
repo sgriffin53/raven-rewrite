@@ -5,7 +5,7 @@
 
 struct mobreturn {
 	int mobility;
-	int mobility2; //number of squares that can be reached in 2 moves but not 1
+	int mobility2; // number of squares that can be reached in 2 moves but not 1
 	int kingattacks;
 	int kingattackers;
 	int pstO;

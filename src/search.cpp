@@ -1,17 +1,17 @@
-#include "search.hpp"
-#include "eval.hpp"
 #include "chess/move.hpp"
+#include "eval.hpp"
+#include "search.hpp"
+#include <climits>
 #include <ctime>
 #include <iostream>
-#include <climits>
 #include <vector>
 
-#include "globals.hpp"
-#include "chess/movegen.hpp"
-#include "chess/makemove.hpp"
 #include "chess/attacks.hpp"
 #include "chess/draw.hpp"
 #include "chess/hash.hpp"
+#include "chess/makemove.hpp"
+#include "chess/movegen.hpp"
+#include "globals.hpp"
 #include "sort.hpp"
 
 #define ONE_PLY 4
@@ -41,14 +41,16 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 		return NO_SCORE;
 	}
 	int standpat = taperedEval(pos);
-	if (standpat >= beta) return beta;
-	if (alpha < standpat) alpha = standpat;
+	if (standpat >= beta)
+		return beta;
+	if (alpha < standpat)
+		alpha = standpat;
 	Move moves[128]; // 74 max captures + 21 max promotions rounded up to nearest 2^x
 	int num_moves = genMoves(pos, moves, 1);
 	Move TTmove;
 	sortMoves(pos, moves, num_moves, &TTmove, ply);
-	for (int i = 0;i < num_moves;i++) {
-		makeMove(&moves[i],pos);
+	for (int i = 0; i < num_moves; i++) {
+		makeMove(&moves[i], pos);
 		pos->tomove = !pos->tomove;
 		if (isCheck(pos)) {
 			pos->tomove = !pos->tomove;
@@ -59,7 +61,8 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 		nodesSearched++;
 		const int score = -qSearch(pos, -beta, -alpha, ply + 1, endtime);
 		unmakeMove(&moves[i], pos);
-		if (score == -NO_SCORE) return NO_SCORE;
+		if (score == -NO_SCORE)
+			return NO_SCORE;
 		if (score >= beta) {
 			return beta;
 		}
@@ -70,27 +73,31 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 	return alpha;
 }
 
-int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, int ply, Move *pv, clock_t endtime, std::vector<Move>& fullPV, int cut) {
-	if (ply > seldepth) seldepth = ply;
+int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, int ply, Move *pv, clock_t endtime, std::vector<Move> &fullPV, int cut) {
+	if (ply > seldepth)
+		seldepth = ply;
 	if (outOfTime(endtime)) {
 		return NO_SCORE;
 	}
 	int incheck = isCheck(pos);
 	// TODO: draw detection
 	if (depthleft <= 0) {
-		//dspBoard(pos);
-		//std::cout << "eval: " << taperedEval(pos) << "\n";
-		//return taperedEval(pos);
+		// dspBoard(pos);
+		// std::cout << "eval: " << taperedEval(pos) << "\n";
+		// return taperedEval(pos);
 		return qSearch(pos, alpha, beta, ply + 1, endtime);
 	}
-	if (pos->halfmoves >= 100) return 0;
-	if (isInsufficientMaterial(pos)) return 0;
-	if (isThreefold(pos)) return 0;
-	
+	if (pos->halfmoves >= 100)
+		return 0;
+	if (isInsufficientMaterial(pos))
+		return 0;
+	if (isThreefold(pos))
+		return 0;
+
 	int staticeval = taperedEval(pos);
-	
+
 	// null move pruning
-	
+
 	if (!nullmove && !incheck && ply != 0 && depthleft >= 3 * ONE_PLY && staticeval >= beta) {
 		const int orighalfmoves = pos->halfmoves;
 		const int origepsquare = pos->epsquare;
@@ -98,31 +105,31 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		pos->halfmoves = 0;
 		pos->epsquare = -1;
 		pos->irrevidx++;
-		
+
 		int verR = 2 * ONE_PLY;
 		int R = 2 * ONE_PLY;
-		
-		const int val = -alphaBeta(pos,-beta,-beta+1, depthleft - ONE_PLY - R, 1, ply + 1, pv, endtime, fullPV, !cut);
-		
+
+		const int val = -alphaBeta(pos, -beta, -beta + 1, depthleft - ONE_PLY - R, 1, ply + 1, pv, endtime, fullPV, !cut);
+
 		pos->tomove = !pos->tomove;
 		pos->halfmoves = orighalfmoves;
 		pos->epsquare = origepsquare;
 		pos->irrevidx--;
-		
+
 		if (val == -NO_SCORE) {
 			return NO_SCORE;
 		}
-		
+
 		if (val >= beta) {
-			const int verification = alphaBeta(pos,beta - 1,beta, depthleft - ONE_PLY - verR, 1, ply + 1, pv, endtime, fullPV, !cut); 
+			const int verification = alphaBeta(pos, beta - 1, beta, depthleft - ONE_PLY - verR, 1, ply + 1, pv, endtime, fullPV, !cut);
 			if (verification == NO_SCORE) {
 				return NO_SCORE;
 			}
-			if (verification >= beta) return beta;
+			if (verification >= beta)
+				return beta;
 		}
-		
 	}
-	
+
 	int bestscore = INT_MIN;
 	Move bestmove;
 	Move moves[MAX_MOVES];
@@ -130,18 +137,18 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	int num_moves = genMoves(pos, moves, 0);
 	Move TTmove;
 	sortMoves(pos, moves, num_moves, &TTmove, ply);
-	for (int i = 0;i < num_moves;i++) {
-		
+	for (int i = 0; i < num_moves; i++) {
+
 		std::vector<Move> childPV;
-		
+
 		int cappiece = moves[i].cappiece;
-		//Position origpos = *pos;
+		// Position origpos = *pos;
 		makeMove(&moves[i], pos);
-		
+
 		pos->tomove = !pos->tomove;
 		if (isCheck(pos)) {
 			pos->tomove = !pos->tomove;
-			unmakeMove(&moves[i],pos);
+			unmakeMove(&moves[i], pos);
 			continue;
 		}
 		pos->tomove = !pos->tomove;
@@ -149,12 +156,13 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		nodesSearched++;
 		pos->hashstack[pos->irrevidx] = generateHash(pos);
 		int givescheck = isCheck(pos);
-		
+
 		int score = -alphaBeta(pos, -beta, -alpha, depthleft - ONE_PLY, 0, ply + 1, pv, endtime, childPV, !cut);
 
-		unmakeMove(&moves[i],pos);
-		
-		if (score == -NO_SCORE) return NO_SCORE;
+		unmakeMove(&moves[i], pos);
+
+		if (score == -NO_SCORE)
+			return NO_SCORE;
 		if (score > bestscore) {
 			bestscore = score;
 			bestmove = moves[i];
@@ -171,10 +179,10 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 	}
 	if (legalmoves == 0) {
 		if (incheck) {
-			if (ply == 0) dspBoard(pos);
+			if (ply == 0)
+				dspBoard(pos);
 			return -MATE_SCORE + ply; // checkmate
-		}
-		else {
+		} else {
 			return 0; // stalemate
 		}
 	}
@@ -193,7 +201,7 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 	std::vector<Move> fullPV;
 	const clock_t begin = getClock();
 	clock_t endtime = begin + movetime;
-	for (int d = 1;d <= searchdepth;d++) {
+	for (int d = 1; d <= searchdepth; d++) {
 		fullPV.clear();
 		time_spentms = getClock() - begin;
 		bestmove = pv;
@@ -209,27 +217,27 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 		std::cout << " depth " << d;
 		std::cout << " seldepth " << seldepth;
 		std::cout << " nodes " << nodesSearched;
-		std::cout << " time " << (int)(time_spent*1000);
+		std::cout << " time " << (int)(time_spent * 1000);
 		if (time_spent > 0) {
 			std::cout << " nps " << nps;
 		}
 		std::cout << " score cp " << score;
-		//std::cout << " pv " << movetostr(pv);
+		// std::cout << " pv " << movetostr(pv);
 		std::cout << " pv ";
-		for (auto & m :fullPV){  
-			std::cout << movetostr(m) << " ";  
-		}  
+		for (auto &m : fullPV) {
+			std::cout << movetostr(m) << " ";
+		}
 		std::cout << "\n";
 	}
 	time_spentms = getClock() - begin;
 	time_spent = time_spentms / 1000.0;
-	std::cout << "info time " << (int)(time_spent*1000) << "\n";
+	std::cout << "info time " << (int)(time_spent * 1000) << "\n";
 	std::cout << "bestmove " << movetostr(bestmove) << "\n";
 	return pv;
 }
 Move randmove(Position pos) {
 	// returns a random root move
-	
+
 	srand(time(NULL));
 	Move moves[2048];
 	int num_moves = genMoves(&pos, moves, 0);
@@ -255,7 +263,7 @@ Move randmove(Position pos) {
 	std::cout << " seldepth 1";
 	std::cout << " nodes 0";
 	std::cout << " time 0";
-	//if (time_spent > 0) {
+	// if (time_spent > 0) {
 	//	std::cout << " nps 0";
 	//}
 	std::cout << " score cp 0";

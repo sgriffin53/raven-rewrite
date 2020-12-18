@@ -1,6 +1,8 @@
 #ifndef PST_HPP
 #define PST_HPP
 
+// clang-format off
+
 static const int PST[6][2][64] = {
 	{
 		// Pawn
@@ -172,6 +174,7 @@ static const int PST[6][2][64] = {
 	}
 };
 
+// clang-format off
 
 int PSTval(int colour, const char piece, const int square, const char gamestage);
 
