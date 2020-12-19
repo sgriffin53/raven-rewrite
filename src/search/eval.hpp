@@ -1,7 +1,7 @@
 #ifndef EVAL_HPP
 #define EVAL_HPP
 
-#include "chess/position.hpp"
+#include "../chess/position.hpp"
 
 struct mobreturn {
 	int mobility;

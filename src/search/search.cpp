@@ -1,18 +1,19 @@
-#include "chess/move.hpp"
-#include "eval.hpp"
 #include "search.hpp"
+#include "eval.hpp"
 #include <climits>
 #include <ctime>
 #include <iostream>
 #include <vector>
 
-#include "chess/attacks.hpp"
-#include "chess/draw.hpp"
-#include "chess/hash.hpp"
-#include "chess/makemove.hpp"
-#include "chess/movegen.hpp"
+#include "../chess/attacks.hpp"
+#include "../chess/draw.hpp"
+#include "../chess/hash.hpp"
+#include "../chess/makemove.hpp"
+#include "../chess/move.hpp"
+#include "../chess/movegen.hpp"
 #include "globals.hpp"
 #include "sort.hpp"
+
 
 #define ONE_PLY 4
 #define MAX_MOVES 2048

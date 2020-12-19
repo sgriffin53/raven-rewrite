@@ -1,9 +1,10 @@
-#include "PST.hpp"
-#include "chess/attacks.hpp"
-#include "chess/position.hpp"
 #include "eval.hpp"
+#include "../chess/attacks.hpp"
+#include "../chess/position.hpp"
+#include "PST.hpp"
 #include <cassert>
 #include <iostream>
+
 
 static const int safety_table[9][30] = {
 	/*0p*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

@@ -1,5 +1,6 @@
-#include "chess/position.hpp"
 #include "globals.hpp"
+#include "../chess/position.hpp"
+
 
 U64 nodesSearched;
 int seldepth;
