@@ -13,10 +13,10 @@
 #include "chess/makemove.hpp"
 #include "chess/move.hpp"
 #include "chess/movegen.hpp"
-#include "eval.hpp"
-#include "globals.hpp"
 #include "perft.hpp"
-#include "search.hpp"
+#include "search/eval.hpp"
+#include "search/globals.hpp"
+#include "search/search.hpp"
 #include <fstream>
 
 void UCI_Listen() {

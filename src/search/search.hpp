@@ -1,8 +1,8 @@
 #ifndef SEARCH_HPP
 #define SEARCH_HPP
 
-#include "chess/move.hpp"
-#include "chess/position.hpp"
+#include "../chess/move.hpp"
+#include "../chess/position.hpp"
 #include "eval.hpp"
 #include <ctime>
 #include <vector>
