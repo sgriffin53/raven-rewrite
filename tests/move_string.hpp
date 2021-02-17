@@ -18,10 +18,8 @@ bool moveString() {
 		"2r5/p2k4/2b4n/2Pqp3/p1PPNp1p/4RPp1/1K2RPB1/3Q4 w - - 0 1",
 	};
 
-	Position pos;
-
 	for (const auto &fen : fens) {
-		parsefen(&pos, fen);
+		Position pos(fen);
 
 		Move moves[MAX_MOVES];
 		const int n_moves = genMoves(&pos, moves, 0);

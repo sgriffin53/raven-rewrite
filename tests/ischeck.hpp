@@ -18,10 +18,8 @@ bool isCheck() {
 		{"rnb1kbnr/pppp1ppp/4p3/8/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3", true},
 	};
 
-	Position pos;
-
 	for (auto &[fen, checked] : tests) {
-		parsefen(&pos, fen);
+		Position pos(fen);
 		if (checked != isCheck(&pos)) {
 			return false;
 		}

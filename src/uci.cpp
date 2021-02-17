@@ -20,8 +20,7 @@
 
 void UCI_Listen() {
 	initZobrist();
-	Position pos;
-	parsefen(&pos, "startpos");
+	Position pos("startpos");
 	bool keeprunning = true;
 	while (keeprunning) {
 		std::string line, intermediate;
@@ -151,7 +150,7 @@ void UCI_Listen() {
 			//}
 		} else if (numtokens >= 2 && tokens[0] == "position") {
 			if (tokens[1] == "startpos") { // position startpos
-				parsefen(&pos, "startpos");
+				pos.setFen("startpos");
 
 				if (numtokens > 3 && tokens[2] == "moves") {
 					for (int i = 3; i < numtokens; i++) {
@@ -176,7 +175,7 @@ void UCI_Listen() {
 
 					if (tokens[i] == "moves") {
 						// parse fen and get ready for the moves list
-						parsefen(&pos, fen);
+						pos.setFen(fen);
 						readingfen = false;
 					}
 
@@ -189,7 +188,7 @@ void UCI_Listen() {
 				}
 				if (readingfen) {
 					// parse fen since we haven't already
-					parsefen(&pos, fen);
+					pos.setFen(fen);
 				}
 			}
 		}

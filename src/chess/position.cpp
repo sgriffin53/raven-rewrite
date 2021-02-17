@@ -168,32 +168,33 @@ void dspBoard(Position *pos) {
 	std::cout << "\n";
 }
 
-void parsefen(Position *pos, const std::string &ofen) {
-	if (ofen == "startpos") {
-		parsefen(pos, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+Position::Position(const std::string &fen) { setFen(fen); }
+
+void Position::setFen(const std::string &fen) {
+	if (fen == "startpos") {
+		setFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 		return;
 	}
-	std::string fen = ofen;
 
 	// set blank position
 	for (int i = 0; i < 2; i++) {
-		pos->colours[i] = 0ULL;
+		colours[i] = 0ULL;
 	}
 	for (int i = 0; i < 6; i++) {
-		pos->pieces[i] = 0ULL;
+		pieces[i] = 0ULL;
 	}
-	pos->epsquare = -1;
-	pos->WcastleKS = 0;
-	pos->WcastleQS = 0;
-	pos->BcastleKS = 0;
-	pos->BcastleQS = 0;
+	epsquare = -1;
+	WcastleKS = 0;
+	WcastleQS = 0;
+	BcastleKS = 0;
+	BcastleQS = 0;
 
 	int numtokens;
 
 	std::string line, intermediate;
 	// std::string intermediate;
 
-	line = ofen;
+	line = fen;
 
 	// Vector of string to save tokens
 	std::vector<std::string> tokens;
@@ -216,65 +217,65 @@ void parsefen(Position *pos, const std::string &ofen) {
 		int a = fileranktosquareidx(realfile, realrank);
 		switch (letter) {
 		case 'p': {
-			pos->pieces[PAWN] |= (1ULL << a);
-			pos->colours[BLACK] |= (1ULL << a);
+			pieces[PAWN] |= (1ULL << a);
+			colours[BLACK] |= (1ULL << a);
 			break;
 		}
 		case 'n': {
-			pos->pieces[KNIGHT] |= (1ULL << a);
-			pos->colours[BLACK] |= (1ULL << a);
+			pieces[KNIGHT] |= (1ULL << a);
+			colours[BLACK] |= (1ULL << a);
 			break;
 		}
 		case 'b': {
-			pos->pieces[BISHOP] |= (1ULL << a);
-			pos->colours[BLACK] |= (1ULL << a);
+			pieces[BISHOP] |= (1ULL << a);
+			colours[BLACK] |= (1ULL << a);
 			break;
 		}
 		case 'r': {
-			pos->pieces[ROOK] |= (1ULL << a);
-			pos->colours[BLACK] |= (1ULL << a);
+			pieces[ROOK] |= (1ULL << a);
+			colours[BLACK] |= (1ULL << a);
 			break;
 		}
 		case 'q': {
-			pos->pieces[QUEEN] |= (1ULL << a);
-			pos->colours[BLACK] |= (1ULL << a);
+			pieces[QUEEN] |= (1ULL << a);
+			colours[BLACK] |= (1ULL << a);
 			break;
 		}
 		case 'k': {
-			pos->pieces[KING] |= (1ULL << a);
-			pos->colours[BLACK] |= (1ULL << a);
-			pos->Bkingpos = a;
+			pieces[KING] |= (1ULL << a);
+			colours[BLACK] |= (1ULL << a);
+			Bkingpos = a;
 			break;
 		}
 		case 'P': {
-			pos->pieces[PAWN] |= (1ULL << a);
-			pos->colours[WHITE] |= (1ULL << a);
+			pieces[PAWN] |= (1ULL << a);
+			colours[WHITE] |= (1ULL << a);
 			break;
 		}
 		case 'N': {
-			pos->pieces[KNIGHT] |= (1ULL << a);
-			pos->colours[WHITE] |= (1ULL << a);
+			pieces[KNIGHT] |= (1ULL << a);
+			colours[WHITE] |= (1ULL << a);
 			break;
 		}
 		case 'B': {
-			pos->pieces[BISHOP] |= (1ULL << a);
-			pos->colours[WHITE] |= (1ULL << a);
+			pieces[BISHOP] |= (1ULL << a);
+			colours[WHITE] |= (1ULL << a);
 			break;
 		}
 		case 'R': {
-			pos->pieces[ROOK] |= (1ULL << a);
-			pos->colours[WHITE] |= (1ULL << a);
+			pieces[ROOK] |= (1ULL << a);
+			colours[WHITE] |= (1ULL << a);
 			break;
 		}
 		case 'Q': {
-			pos->pieces[QUEEN] |= (1ULL << a);
-			pos->colours[WHITE] |= (1ULL << a);
+			pieces[QUEEN] |= (1ULL << a);
+			colours[WHITE] |= (1ULL << a);
 			break;
 		}
 		case 'K': {
-			pos->pieces[KING] |= (1ULL << a);
-			pos->colours[WHITE] |= (1ULL << a);
-			pos->Wkingpos = a;
+			pieces[KING] |= (1ULL << a);
+			colours[WHITE] |= (1ULL << a);
+			Wkingpos = a;
 			break;
 		}
 		case '/':
@@ -308,44 +309,44 @@ void parsefen(Position *pos, const std::string &ofen) {
 	}
 
 	if (tokens[1] == "w")
-		pos->tomove = WHITE;
+		tomove = WHITE;
 	if (tokens[1] == "b")
-		pos->tomove = BLACK;
+		tomove = BLACK;
 
 	for (size_t i = 0; i < tokens[2].length(); i++) {
 		if (tokens[2][i] == 'K')
-			pos->WcastleKS = 1;
+			WcastleKS = 1;
 		else if (tokens[2][i] == 'Q')
-			pos->WcastleQS = 1;
+			WcastleQS = 1;
 		else if (tokens[2][i] == 'k')
-			pos->BcastleKS = 1;
+			BcastleKS = 1;
 		else if (tokens[2][i] == 'q')
-			pos->BcastleQS = 1;
+			BcastleQS = 1;
 	}
 
 	if (numtokens >= 4 && tokens[3] != "-") {
 		// en passant square given
-		pos->epsquare = strsquaretoidx(tokens[3]);
+		epsquare = strsquaretoidx(tokens[3]);
 	} else
-		pos->epsquare = -1;
+		epsquare = -1;
 
 	// std::cout << numtokens << "\n";
 	if (numtokens < 5 || tokens[4] == "-")
-		pos->halfmoves = 0;
+		halfmoves = 0;
 	else
-		pos->halfmoves = std::stoi(tokens[4]);
-	pos->irrevidx = 0;
-	pos->irrev[pos->irrevidx].epsquare = pos->epsquare;
-	pos->irrev[pos->irrevidx].WcastleQS = pos->WcastleQS;
-	pos->irrev[pos->irrevidx].WcastleKS = pos->WcastleKS;
-	pos->irrev[pos->irrevidx].BcastleQS = pos->BcastleQS;
-	pos->irrev[pos->irrevidx].BcastleKS = pos->BcastleKS;
-	pos->irrev[pos->irrevidx].Wcastled = pos->Wcastled;
-	pos->irrev[pos->irrevidx].Bcastled = pos->Bcastled;
-	pos->irrev[pos->irrevidx].halfmoves = pos->halfmoves;
-	pos->irrev[pos->irrevidx].Wkingpos = pos->Wkingpos;
-	pos->irrev[pos->irrevidx].Bkingpos = pos->Bkingpos;
-	pos->hashstack[pos->irrevidx] = generateHash(pos);
+		halfmoves = std::stoi(tokens[4]);
+	irrevidx = 0;
+	irrev[irrevidx].epsquare = epsquare;
+	irrev[irrevidx].WcastleQS = WcastleQS;
+	irrev[irrevidx].WcastleKS = WcastleKS;
+	irrev[irrevidx].BcastleQS = BcastleQS;
+	irrev[irrevidx].BcastleKS = BcastleKS;
+	irrev[irrevidx].Wcastled = Wcastled;
+	irrev[irrevidx].Bcastled = Bcastled;
+	irrev[irrevidx].halfmoves = halfmoves;
+	irrev[irrevidx].Wkingpos = Wkingpos;
+	irrev[irrevidx].Bkingpos = Bkingpos;
+	hashstack[irrevidx] = generateHash(this);
 }
 
 Move Position::find_move(const std::string &movestr) const {

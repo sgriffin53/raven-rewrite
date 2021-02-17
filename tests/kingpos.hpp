@@ -14,7 +14,6 @@
 namespace test {
 
 bool kingPos() {
-	Position pos;
 	std::string line, intermediate;
 	std::ifstream ReadFile("../tests/suites/vajolet.txt");
 	int j = 0;
@@ -31,7 +30,7 @@ bool kingPos() {
 			numtokens++;
 		}
 		std::string fen = tokens[0];
-		parsefen(&pos, fen);
+		Position pos(fen);
 		Move moves[MAX_MOVES];
 		int num_moves = genMoves(&pos, moves, 0);
 		for (int i = 0; i < num_moves; i++) {

@@ -34,6 +34,8 @@ class Irreversible {
 
 class Position {
   public:
+	Position(const std::string &fen);
+
 	Move find_move(const std::string &movestr) const;
 
 	char getPiece(const int sq) const;
@@ -43,6 +45,8 @@ class Position {
 	void setPiece(int sq, int colour, char piece);
 
 	void clearSquare(int sq);
+
+	void setFen(const std::string &fen);
 
 	U64 pieces[6];
 	U64 colours[2];
@@ -69,6 +73,5 @@ int getrank(int square);
 int getfile(int square);
 int strsquaretoidx(std::string square);
 void dspBoard(Position *pos);
-void parsefen(Position *pos, const std::string &ofen);
 
 #endif
