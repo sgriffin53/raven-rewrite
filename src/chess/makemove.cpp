@@ -1,6 +1,7 @@
 #include "makemove.hpp"
 #include "hash.hpp"
 #include "move.hpp"
+#include "pieces.hpp"
 #include "position.hpp"
 #include <cassert>
 #include <iostream>

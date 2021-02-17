@@ -1,4 +1,5 @@
 #include "hash.hpp"
+#include "pieces.hpp"
 #include "position.hpp"
 #include <cassert>
 #include <stdlib.h>

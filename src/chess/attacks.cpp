@@ -1,5 +1,6 @@
 
 #include "attacks.hpp"
+#include "pieces.hpp"
 #include "position.hpp"
 #include <iostream>
 

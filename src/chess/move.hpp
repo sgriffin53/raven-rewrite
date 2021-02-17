@@ -1,6 +1,7 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+#include "pieces.hpp"
 #include <cassert>
 #include <string>
 
@@ -16,6 +17,52 @@ class Move {
 		assert(0 <= from && from <= 63);
 		assert(0 <= to && to <= 63);
 		assert(from != to);
+		assert(piece != NONE);
+		assert(cappiece != KING);
+
+		switch (type) {
+		case NORMAL:
+			assert(prom == NONE);
+			assert(cappiece == NONE);
+			break;
+		case DOUBLE:
+			assert(piece == PAWN);
+			assert(prom == NONE);
+			assert(cappiece == NONE);
+			break;
+		case CAPTURE:
+			assert(prom == NONE);
+			assert(cappiece != NONE);
+			break;
+		case EN_PASSANT:
+			assert(piece == PAWN);
+			assert(prom == NONE);
+			assert(cappiece == NONE); // This is correct as per the movegen
+			break;
+		case PROMO:
+			assert(piece == PAWN);
+			assert(prom == KNIGHT || prom == BISHOP || prom == ROOK || prom == QUEEN);
+			assert(cappiece == NONE);
+			break;
+		case PROMO_CAPTURE:
+			assert(piece == PAWN);
+			assert(prom == KNIGHT || prom == BISHOP || prom == ROOK || prom == QUEEN);
+			assert(cappiece != NONE);
+			break;
+		case KSC:
+			assert(piece == KING);
+			assert(prom == NONE);
+			assert(cappiece == NONE);
+			break;
+		case QSC:
+			assert(piece == KING);
+			assert(prom == NONE);
+			assert(cappiece == NONE);
+			break;
+		default:
+			abort();
+			break;
+		}
 	}
 
 	int from() const { return m_from; }

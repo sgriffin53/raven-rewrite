@@ -1,4 +1,5 @@
 #include "move.hpp"
+#include "pieces.hpp"
 #include "position.hpp"
 
 std::string Move::string() const {

@@ -1,6 +1,7 @@
 #include "draw.hpp"
 #include "bitboards.hpp"
 #include "hash.hpp"
+#include "pieces.hpp"
 #include "position.hpp"
 #include <cassert>
 #include <iostream>

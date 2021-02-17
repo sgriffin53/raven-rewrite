@@ -1,4 +1,5 @@
 #include "sort.hpp"
+#include "../chess/pieces.hpp"
 #include <cassert>
 
 int capval(int piece) {

@@ -3,6 +3,7 @@
 
 #include "../src/chess/makemove.hpp"
 #include "../src/chess/movegen.hpp"
+#include "../src/chess/pieces.hpp"
 #include "../src/chess/position.hpp"
 
 #include <fstream>

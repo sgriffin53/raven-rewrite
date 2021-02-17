@@ -1,0 +1,6 @@
+#ifndef PIECES_HPP
+#define PIECES_HPP
+
+enum PIECE { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, NONE };
+
+#endif

@@ -2,6 +2,7 @@
 #include "attacks.hpp"
 #include "bitboards.hpp"
 #include "move.hpp"
+#include "pieces.hpp"
 #include "position.hpp"
 #include <cassert>
 #include <iostream>

@@ -1,5 +1,6 @@
 #include "eval.hpp"
 #include "../chess/attacks.hpp"
+#include "../chess/pieces.hpp"
 #include "../chess/position.hpp"
 #include "PST.hpp"
 #include <cassert>

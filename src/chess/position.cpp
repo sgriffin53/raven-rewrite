@@ -2,6 +2,7 @@
 #include "attacks.hpp"
 #include "draw.hpp"
 #include "hash.hpp"
+#include "pieces.hpp"
 #include <cassert>
 #include <cstring>
 #include <iostream>
