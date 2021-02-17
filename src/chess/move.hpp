@@ -16,6 +16,7 @@ class Move {
 	int cappiece;
 	int type;
 };
+
 std::string movetostr(Move move);
 
 #endif

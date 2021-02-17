@@ -1,10 +1,11 @@
+#include "movegen.hpp"
 #include "attacks.hpp"
 #include "bitboards.hpp"
 #include "move.hpp"
-#include "movegen.hpp"
 #include "position.hpp"
 #include <cassert>
 #include <iostream>
+
 
 int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	U64 BBattacks = 0ULL;
@@ -135,6 +136,7 @@ int genBishopMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	}
 	return num_moves;
 }
+
 int genRookMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	U64 BBattacks = 0ULL;
 	int num_moves = 0;
@@ -184,6 +186,7 @@ int genQueenMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	}
 	return num_moves;
 }
+
 int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	// generates all pawn moves
 	U64 BBoccupied = pos->colours[WHITE] | pos->colours[BLACK];

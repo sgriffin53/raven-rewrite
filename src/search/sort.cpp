@@ -19,6 +19,7 @@ int capval(int piece) {
 	assert(0);
 	return 0;
 }
+
 int mvvlva(char piece, char cappiece) { return 10 * capval(cappiece) - capval(piece); }
 
 void sortMoves(Position *pos, Move *moves, const int num_moves, Move *TTmove, int ply) {

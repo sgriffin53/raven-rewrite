@@ -1,19 +1,17 @@
 #include "search.hpp"
-#include "eval.hpp"
-#include <climits>
-#include <ctime>
-#include <iostream>
-#include <vector>
-
 #include "../chess/attacks.hpp"
 #include "../chess/draw.hpp"
 #include "../chess/hash.hpp"
 #include "../chess/makemove.hpp"
 #include "../chess/move.hpp"
 #include "../chess/movegen.hpp"
+#include "eval.hpp"
 #include "globals.hpp"
 #include "sort.hpp"
-
+#include <climits>
+#include <ctime>
+#include <iostream>
+#include <vector>
 
 #define ONE_PLY 4
 #define MAX_MOVES 2048
@@ -23,6 +21,7 @@ clock_t getClock() {
 	clock_gettime(CLOCK_REALTIME, &tp);
 	return ((clock_t)tp.tv_sec * 1000 + tp.tv_nsec / 1000000);
 }
+
 int outOfTime(clock_t endtime) {
 	static int counter = 0;
 
@@ -236,6 +235,7 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 	std::cout << "bestmove " << movetostr(bestmove) << "\n";
 	return pv;
 }
+
 Move randmove(Position pos) {
 	// returns a random root move
 

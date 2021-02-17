@@ -14,6 +14,7 @@ struct mobreturn {
 	int centre;
 	int homerowsattacks;
 };
+
 struct mobreturn Nmobility(Position *pos, int side);
 struct mobreturn Bmobility(Position *pos, int side);
 struct mobreturn Rmobility(Position *pos, int side);

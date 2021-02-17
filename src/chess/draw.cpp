@@ -1,5 +1,5 @@
-#include "bitboards.hpp"
 #include "draw.hpp"
+#include "bitboards.hpp"
 #include "hash.hpp"
 #include "position.hpp"
 #include <cassert>

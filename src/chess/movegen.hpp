@@ -1,5 +1,6 @@
 #ifndef MOVEGEN_H
 #define MOVEGEN_H
+
 #include "move.hpp"
 #include "position.hpp"
 
@@ -10,4 +11,5 @@ int genBishopMoves(Position *pos, int square, Move *moves, int forqsearch);
 int genRookMoves(Position *pos, int square, Move *moves, int forqsearch);
 int genQueenMoves(Position *pos, int square, Move *moves, int forqsearch);
 int genMoves(Position *pos, Move *moves, int forqsearch);
+
 #endif

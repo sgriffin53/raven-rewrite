@@ -1,6 +1,7 @@
 #include "move.hpp"
 #include "position.hpp"
 #include <string>
+
 std::string movetostr(Move move) {
 	std::string returnstring;
 	char startsquarefile = (char)(getfile(move.from) + 97);

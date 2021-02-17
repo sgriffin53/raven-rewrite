@@ -57,6 +57,7 @@ int pieceintval(int inpiece, int colour) {
 	}
 	return 0;
 }
+
 U64 generateHash(Position *pos) {
 	assert(pos);
 	U64 zobrist = 0;

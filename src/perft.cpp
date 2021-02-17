@@ -1,10 +1,11 @@
+#include "perft.hpp"
 #include "chess/attacks.hpp"
 #include "chess/makemove.hpp"
 #include "chess/move.hpp"
 #include "chess/movegen.hpp"
 #include "chess/position.hpp"
-#include "perft.hpp"
 #include <iostream>
+
 
 Move movestack[12];
 int movestackidx, capstackidx;

@@ -9,6 +9,7 @@ int isCheck(Position *pos) {
 	else
 		return isAttacked(pos, pos->Bkingpos, !pos->tomove);
 }
+
 int isAttacked(Position *pos, int square, int colour) {
 	assert(pos);
 	// assert(square >= 0 && square <= 63);

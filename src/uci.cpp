@@ -1,23 +1,22 @@
+#include "chess/attacks.hpp"
+#include "chess/bitboards.hpp"
+#include "chess/hash.hpp"
 #include "chess/libchess/src/libchess/movegen.hpp"
+#include "chess/makemove.hpp"
+#include "chess/move.hpp"
+#include "chess/movegen.hpp"
 #include "chess/position.hpp"
+#include "perft.hpp"
+#include "search/eval.hpp"
+#include "search/globals.hpp"
+#include "search/search.hpp"
 #include <climits>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <time.h>
 #include <vector>
-
-#include "chess/attacks.hpp"
-#include "chess/bitboards.hpp"
-#include "chess/hash.hpp"
-#include "chess/makemove.hpp"
-#include "chess/move.hpp"
-#include "chess/movegen.hpp"
-#include "perft.hpp"
-#include "search/eval.hpp"
-#include "search/globals.hpp"
-#include "search/search.hpp"
-#include <fstream>
 
 void UCI_Listen() {
 	initZobrist();

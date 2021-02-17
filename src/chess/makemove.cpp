@@ -1,5 +1,5 @@
-#include "hash.hpp"
 #include "makemove.hpp"
+#include "hash.hpp"
 #include "move.hpp"
 #include "position.hpp"
 #include <cassert>
@@ -252,6 +252,7 @@ void unmakeMove(const Move *move, Position *pos) {
 	// movestackidx--;
 	// capstackidx--;
 }
+
 void makeMovestr(std::string move, Position *pos) {
 
 	//	char startsquare[3];
@@ -342,8 +343,8 @@ void makeMovestr(std::string move, Position *pos) {
 	Move moveobj = {.from = startsquareidx, .to = endsquareidx, .prom = prom, .piece = piece, .cappiece = cappiece, .type = movetype};
 	makeMove(&moveobj, pos);
 }
-void unmakeMovestr(std::string move, Position *pos, int lastcap) {
 
+void unmakeMovestr(std::string move, Position *pos, int lastcap) {
 	//	char startsquare[3];
 	//	char endsquare[3];
 	//	char prompiece[2];

@@ -1,5 +1,6 @@
 #ifndef POSITION_H
 #define POSITION_H
+
 #include <string>
 
 typedef unsigned long long U64;
@@ -29,6 +30,7 @@ class Irreversible {
 	int Wkingpos;
 	int Bkingpos;
 };
+
 class Position {
   public:
 	U64 pieces[6];
@@ -49,6 +51,7 @@ class Position {
 	int irrevidx;
 	U64 hashstack[MAX_PLY];
 };
+
 void dspBB(U64 BB);
 int fileranktosquareidx(int file, int rank);
 int getrank(int square);
@@ -60,4 +63,5 @@ void setPiece(Position *pos, int sq, int colour, char piece);
 void clearSquare(Position *pos, int sq);
 void dspBoard(Position *pos);
 void parsefen(Position *pos, std::string ofen);
+
 #endif

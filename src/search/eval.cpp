@@ -5,7 +5,6 @@
 #include <cassert>
 #include <iostream>
 
-
 static const int safety_table[9][30] = {
 	/*0p*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	/*1p*/ {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -291,6 +290,7 @@ void evalMobility(Position *pos, int *openingEval, int *endgameEval) {
 	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
 	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 }
+
 void evalPST(Position *pos, int *openingEval, int *endgameEval) {
 	assert(pos);
 	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
@@ -311,6 +311,7 @@ void evalPST(Position *pos, int *openingEval, int *endgameEval) {
 	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
 	assert(*endgameEval >= -MATE_SCORE && *endgameEval <= MATE_SCORE);
 }
+
 int finalEval(Position *pos, int *openingEval, int *endgameEval) {
 
 	assert(*openingEval >= -MATE_SCORE && *openingEval <= MATE_SCORE);
@@ -422,6 +423,7 @@ struct mobreturn Nmobility(Position *pos, int side) {
 	returnstruct.centre = centre;
 	return returnstruct;
 }
+
 struct mobreturn Bmobility(Position *pos, int side) {
 	U64 BBsidepieces;
 	U64 BBkingzone;
@@ -467,6 +469,7 @@ struct mobreturn Bmobility(Position *pos, int side) {
 	returnstruct.centre = centre;
 	return returnstruct;
 }
+
 struct mobreturn Rmobility(Position *pos, int side) {
 	U64 BBsidepieces;
 	U64 BBkingzone;
@@ -512,6 +515,7 @@ struct mobreturn Rmobility(Position *pos, int side) {
 	returnstruct.centre = centre;
 	return returnstruct;
 }
+
 struct mobreturn Qmobility(Position *pos, int side) {
 	U64 BBsidepieces;
 	U64 BBkingzone;

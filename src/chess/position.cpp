@@ -1,7 +1,7 @@
+#include "position.hpp"
 #include "attacks.hpp"
 #include "draw.hpp"
 #include "hash.hpp"
-#include "position.hpp"
 #include <cassert>
 #include <cstring>
 #include <iostream>
@@ -9,7 +9,9 @@
 #include <string>
 #include <vector>
 
+
 int fileranktosquareidx(int file, int rank) { return (rank)*8 + file; }
+
 int getrank(int square) {
 	assert(square >= 0 && square <= 63);
 	return square / 8;
@@ -25,6 +27,7 @@ int strsquaretoidx(std::string square) {
 	int rank = (int)square[1] - 49;
 	return fileranktosquareidx(file, rank);
 }
+
 char getPiece(Position *pos, int sq) {
 	assert(pos);
 	assert(sq >= 0 && sq <= 63);
@@ -65,6 +68,7 @@ void setPiece(Position *pos, int sq, int colour, char piece) {
 	}
 	pos->colours[colour] |= BBsquare;
 }
+
 void clearSquare(Position *pos, int sq) {
 	// clears a square of a given piece
 	pos->colours[WHITE] &= ~(1ULL << sq);
@@ -72,8 +76,8 @@ void clearSquare(Position *pos, int sq) {
 	int oldpiece = getPiece(pos, sq);
 	pos->pieces[oldpiece] &= ~(1ULL << sq);
 }
-void dspBB(U64 BB) {
 
+void dspBB(U64 BB) {
 	std::cout << "  +---+---+---+---+---+---+---+---+\n";
 	std::cout << "8 |";
 
@@ -98,8 +102,8 @@ void dspBB(U64 BB) {
 	}
 	std::cout << "    A   B   C   D   E   F   G   H  \n";
 }
-void dspBoard(Position *pos) {
 
+void dspBoard(Position *pos) {
 	std::cout << "\n";
 	std::cout << "  +---+---+---+---+---+---+---+---+\n";
 	std::cout << "8 |";
