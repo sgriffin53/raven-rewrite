@@ -51,13 +51,12 @@ int qSearch(Position *pos, int alpha, int beta, int ply, clock_t endtime) {
 	sortMoves(pos, moves, num_moves, &TTmove, ply);
 	for (int i = 0; i < num_moves; i++) {
 		makeMove(&moves[i], pos);
-		pos->tomove = !pos->tomove;
-		if (isCheck(pos)) {
-			pos->tomove = !pos->tomove;
+
+		if (isAttacked(pos, pos->theirKing(), pos->tomove)) {
 			unmakeMove(&moves[i], pos);
 			continue;
 		}
-		pos->tomove = !pos->tomove;
+
 		nodesSearched++;
 		const int score = -qSearch(pos, -beta, -alpha, ply + 1, endtime);
 		unmakeMove(&moves[i], pos);
@@ -145,13 +144,11 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 		// Position origpos = *pos;
 		makeMove(&moves[i], pos);
 
-		pos->tomove = !pos->tomove;
-		if (isCheck(pos)) {
-			pos->tomove = !pos->tomove;
+		if (isAttacked(pos, pos->theirKing(), pos->tomove)) {
 			unmakeMove(&moves[i], pos);
 			continue;
 		}
-		pos->tomove = !pos->tomove;
+
 		legalmoves++;
 		nodesSearched++;
 		pos->hashstack[pos->irrevidx] = generateHash(pos);
@@ -249,13 +246,12 @@ Move randmove(Position pos) {
 		idx = rand() % num_moves;
 		move = moves[idx];
 		makeMove(&move, &pos);
-		pos.tomove = !pos.tomove;
-		if (isCheck(&pos)) {
-			pos.tomove = !pos.tomove;
+
+		if (isAttacked(&pos, pos.theirKing(), pos.tomove)) {
 			unmakeMove(&move, &pos);
 			continue;
 		}
-		pos.tomove = !pos.tomove;
+
 		unmakeMove(&move, &pos);
 		valid = true;
 	}

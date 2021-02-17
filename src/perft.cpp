@@ -14,51 +14,20 @@ U64 perft(Position *pos, int depth) {
 		return 1;
 
 	U64 nodes = 0;
+
 	Move moves[MAX_MOVES];
 	const int n_moves = genMoves(pos, moves, 0);
-	for (int i = 0; i < n_moves; i++) {
-		// Position origpos = *pos;
-		makeMove(&moves[i], pos);
-		pos->tomove = !pos->tomove;
 
-		const int incheck = isCheck(pos);
-		if (incheck) {
-			pos->tomove = !pos->tomove;
+	for (int i = 0; i < n_moves; i++) {
+		makeMove(&moves[i], pos);
+
+		if (isAttacked(pos, pos->theirKing(), pos->tomove)) {
 			unmakeMove(&moves[i], pos);
 			continue;
 		}
-		pos->tomove = !pos->tomove;
+
 		nodes += perft(pos, depth - 1);
-		// Position aftermake = *pos;
 		unmakeMove(&moves[i], pos);
-		/*
-		if (!posMatch(pos, &origpos)) {
-
-			printf("orig pos:\n");
-
-
-			std::cout << "move: " << moves[i].string() << "\n";
-			//std::cout << "move type: " << moves[i].type << "\n";
-			std::cout << "move history: " << movestackidx;
-			for (int j = 0;j < depth;j++) {
-				std::cout << movestack[j].string() << " ";
-			}
-			std::cout << "\n";
-			std::cout << "orig pos\n";
-			dspBoard(&origpos);
-			std::cout << "after make\n";
-			dspBoard(&aftermake);
-			//printf("after unmake:\n");
-			std::cout << "after unmake:\n";
-			dspBoard(pos);
-			std::cout << "---\noriginal white bb:\n";
-			dspBB(origpos.colours[WHITE]);
-			std::cout << "after white bb:\n";
-			dspBB(pos->colours[WHITE]);
-
-		//	return 0;
-		}
-		 */
 	}
 
 	return nodes;
@@ -77,19 +46,15 @@ U64 sperft(Position *pos, int depth) {
 	for (int i = 0; i < n_moves; i++) {
 		// Position origpos = *pos;
 		makeMove(&moves[i], pos);
-		pos->tomove = !pos->tomove;
 
-		const int incheck = isCheck(pos);
-		if (incheck) {
-			pos->tomove = !pos->tomove;
+		if (isAttacked(pos, pos->theirKing(), pos->tomove)) {
 			unmakeMove(&moves[i], pos);
 			continue;
 		}
-		pos->tomove = !pos->tomove;
+
 		U64 nodes = perft(pos, depth - 1);
 		total_nodes += nodes;
 		std::cout << moves[i].string() << " - " << nodes << "\n";
-		// Position aftermake = *pos;
 		unmakeMove(&moves[i], pos);
 	}
 	return total_nodes;

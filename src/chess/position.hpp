@@ -50,6 +50,10 @@ class Position {
 
 	std::string getFen() const;
 
+	int ourKing() const { return tomove == WHITE ? Wkingpos : Bkingpos; }
+
+	int theirKing() const { return tomove == BLACK ? Wkingpos : Bkingpos; }
+
 	U64 pieces[6];
 	U64 colours[2];
 	int tomove;
