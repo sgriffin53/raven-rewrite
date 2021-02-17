@@ -253,95 +253,9 @@ void unmakeMove(const Move *move, Position *pos) {
 	// capstackidx--;
 }
 
-void makeMovestr(std::string move, Position *pos) {
-
-	//	char startsquare[3];
-	//	char endsquare[3];
-	//	char prompiece[2];
-	std::string startsquare, endsquare, prompiece;
-
-	//	startsquare = move[0] + move[1];
-	// endsquare += move[2] + move[3];
-	// prompiece = move[4];
-	startsquare += move[0];
-	startsquare += move[1];
-	endsquare += move[2];
-	endsquare += move[3];
-	prompiece += move[4];
-	int startsquareidx = strsquaretoidx(startsquare);
-	int endsquareidx = strsquaretoidx(endsquare);
-	char cappiece = getPiece(pos, endsquareidx);
-	char piece = getPiece(pos, startsquareidx);
-	char prom = NONE;
-	switch (prompiece[0]) {
-	case 'q':
-		prom = QUEEN;
-		break;
-	case 'r':
-		prom = ROOK;
-		break;
-	case 'b':
-		prom = BISHOP;
-		break;
-	case 'n':
-		prom = KNIGHT;
-		break;
-	}
-	int isep = 0;
-	if (piece == PAWN && endsquareidx == pos->epsquare) {
-		if (pos->tomove == WHITE) {
-			if (startsquareidx == endsquareidx - 11 || startsquareidx == endsquareidx - 9) {
-				isep = 1;
-			}
-		} else if (pos->tomove == BLACK) {
-			if (startsquareidx == endsquareidx + 11 || startsquareidx == endsquareidx + 9) {
-				isep = 1;
-			}
-		}
-	}
-	int isdouble = 0;
-	if (piece == PAWN) {
-		if (pos->tomove == WHITE) {
-			if (getrank(startsquareidx) == 1 && getrank(endsquareidx) == 3) {
-				isdouble = 1;
-			}
-		} else if (pos->tomove == BLACK) {
-			if (getrank(startsquareidx) == 6 && getrank(endsquareidx) == 4) {
-				isdouble = 1;
-			}
-		}
-	}
-	int isqsc = 0;
-	int isksc = 0;
-	if (piece == KING) {
-		if (pos->tomove == WHITE) {
-			if (startsquareidx == E1 && endsquareidx == G1)
-				isksc = 1;
-			else if (startsquareidx == E1 && endsquareidx == C1)
-				isqsc = 1;
-		}
-		if (pos->tomove == BLACK) {
-			if (startsquareidx == E8 && endsquareidx == G8)
-				isksc = 1;
-			else if (startsquareidx == E8 && endsquareidx == C8)
-				isqsc = 1;
-		}
-	}
-	char movetype = NORMAL;
-	if (cappiece != NONE && prom != NONE)
-		movetype = PROMO_CAPTURE;
-	else if (prom != NONE)
-		movetype = PROMO;
-	else if (isep)
-		movetype = EN_PASSANT;
-	else if (isdouble)
-		movetype = DOUBLE;
-	else if (isksc)
-		movetype = KSC;
-	else if (isqsc)
-		movetype = QSC;
-	Move moveobj = Move(startsquareidx, endsquareidx, prom, piece, cappiece, movetype);
-	makeMove(&moveobj, pos);
+void makeMovestr(const std::string &movestr, Position *pos) {
+	const auto move = pos->find_move(movestr);
+	makeMove(&move, pos);
 }
 
 void unmakeMovestr(std::string move, Position *pos, int lastcap) {

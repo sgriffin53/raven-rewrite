@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 
-
 int fileranktosquareidx(int file, int rank) { return (rank)*8 + file; }
 
 int getrank(int square) {
@@ -28,7 +27,7 @@ int strsquaretoidx(std::string square) {
 	return fileranktosquareidx(file, rank);
 }
 
-char getPiece(Position *pos, int sq) {
+char getPiece(const Position *pos, int sq) {
 	assert(pos);
 	assert(sq >= 0 && sq <= 63);
 	U64 BBsquare = (1ULL << sq);
@@ -171,7 +170,7 @@ void dspBoard(Position *pos) {
 	std::cout << "\n";
 }
 
-void parsefen(Position *pos, std::string ofen) {
+void parsefen(Position *pos, const std::string &ofen) {
 	if (ofen == "startpos") {
 		parsefen(pos, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 		return;
@@ -349,4 +348,95 @@ void parsefen(Position *pos, std::string ofen) {
 	pos->irrev[pos->irrevidx].Wkingpos = pos->Wkingpos;
 	pos->irrev[pos->irrevidx].Bkingpos = pos->Bkingpos;
 	pos->hashstack[pos->irrevidx] = generateHash(pos);
+}
+
+Move Position::find_move(const std::string &movestr) const {
+	std::string startsquare, endsquare, prompiece;
+
+	startsquare += movestr[0];
+	startsquare += movestr[1];
+	endsquare += movestr[2];
+	endsquare += movestr[3];
+	prompiece += movestr[4];
+	int startsquareidx = strsquaretoidx(startsquare);
+	int endsquareidx = strsquaretoidx(endsquare);
+	char cappiece = getPiece(this, endsquareidx);
+	char piece = getPiece(this, startsquareidx);
+	char prom = NONE;
+
+	switch (prompiece[0]) {
+	case 'q':
+		prom = QUEEN;
+		break;
+	case 'r':
+		prom = ROOK;
+		break;
+	case 'b':
+		prom = BISHOP;
+		break;
+	case 'n':
+		prom = KNIGHT;
+		break;
+	}
+
+	int isep = 0;
+	if (piece == PAWN && endsquareidx == this->epsquare) {
+		if (this->tomove == WHITE) {
+			if (startsquareidx == endsquareidx - 11 || startsquareidx == endsquareidx - 9) {
+				isep = 1;
+			}
+		} else if (this->tomove == BLACK) {
+			if (startsquareidx == endsquareidx + 11 || startsquareidx == endsquareidx + 9) {
+				isep = 1;
+			}
+		}
+	}
+
+	int isdouble = 0;
+	if (piece == PAWN) {
+		if (this->tomove == WHITE) {
+			if (getrank(startsquareidx) == 1 && getrank(endsquareidx) == 3) {
+				isdouble = 1;
+			}
+		} else if (this->tomove == BLACK) {
+			if (getrank(startsquareidx) == 6 && getrank(endsquareidx) == 4) {
+				isdouble = 1;
+			}
+		}
+	}
+
+	int isqsc = 0;
+	int isksc = 0;
+	if (piece == KING) {
+		if (this->tomove == WHITE) {
+			if (startsquareidx == E1 && endsquareidx == G1)
+				isksc = 1;
+			else if (startsquareidx == E1 && endsquareidx == C1)
+				isqsc = 1;
+		}
+		if (this->tomove == BLACK) {
+			if (startsquareidx == E8 && endsquareidx == G8)
+				isksc = 1;
+			else if (startsquareidx == E8 && endsquareidx == C8)
+				isqsc = 1;
+		}
+	}
+
+	char movetype = NORMAL;
+	if (cappiece != NONE && prom != NONE)
+		movetype = PROMO_CAPTURE;
+	else if (prom != NONE)
+		movetype = PROMO;
+	else if (isep)
+		movetype = EN_PASSANT;
+	else if (isdouble)
+		movetype = DOUBLE;
+	else if (isksc)
+		movetype = KSC;
+	else if (isqsc)
+		movetype = QSC;
+	else if (cappiece != NONE)
+		movetype = CAPTURE;
+
+	return Move(startsquareidx, endsquareidx, prom, piece, cappiece, movetype);
 }
