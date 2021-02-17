@@ -50,6 +50,8 @@ class Position {
 
 	std::string getFen() const;
 
+	bool validate() const;
+
 	int ourKing() const { return tomove == WHITE ? Wkingpos : Bkingpos; }
 
 	int theirKing() const { return tomove == BLACK ? Wkingpos : Bkingpos; }

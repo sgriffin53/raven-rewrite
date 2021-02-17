@@ -527,3 +527,80 @@ Move Position::find_move(const std::string &movestr) const {
 
 	return Move(startsquareidx, endsquareidx, prom, piece, cappiece, movetype);
 }
+
+bool Position::validate() const {
+	// Check for colour overlap
+	if (colours[WHITE] & colours[BLACK]) {
+		return false;
+	}
+
+	// Check for piece overlaps
+	for (int i = PAWN; i < KING; i++) {
+		for (int j = i + 1; j <= KING; j++) {
+			if (pieces[i] & pieces[j]) {
+				return false;
+			}
+		}
+	}
+
+	// No pawns on the 1st or 8th ranks
+	if (pieces[PAWN] & (BBrank1 | BBrank8)) {
+		return false;
+	}
+
+	// Check king positions
+	if (Wkingpos != __builtin_ctzll(colours[WHITE] & pieces[KING])) {
+		return false;
+	}
+	if (Bkingpos != __builtin_ctzll(colours[BLACK] & pieces[KING])) {
+		return false;
+	}
+
+	// For each colour...
+	for (int c = 0; c <= 1; c++) {
+		const int numPawns = __builtin_popcountll(colours[c] & pieces[PAWN]);
+		const int numKnights = __builtin_popcountll(colours[c] & pieces[KNIGHT]);
+		const int numBishops = __builtin_popcountll(colours[c] & pieces[BISHOP]);
+		const int numRooks = __builtin_popcountll(colours[c] & pieces[ROOK]);
+		const int numQueens = __builtin_popcountll(colours[c] & pieces[QUEEN]);
+		const int numKings = __builtin_popcountll(colours[c] & pieces[KING]);
+		const int total = numPawns + numKnights + numBishops + numRooks + numQueens + numKings;
+
+		// 16 pieces max
+		if (total > 16) {
+			return false;
+		}
+
+		// 8 pawns max
+		if (numPawns > 8) {
+			return false;
+		}
+
+		// 10 knights max
+		if (numKnights > 10) {
+			return false;
+		}
+
+		// 10 bishops max
+		if (numBishops > 10) {
+			return false;
+		}
+
+		// 10 rooks max
+		if (numRooks > 10) {
+			return false;
+		}
+
+		// 9 queens max
+		if (numQueens > 9) {
+			return false;
+		}
+
+		// 1 king
+		if (numKings != 1) {
+			return false;
+		}
+	}
+
+	return true;
+}
