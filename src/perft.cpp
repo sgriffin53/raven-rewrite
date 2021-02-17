@@ -6,10 +6,6 @@
 #include "chess/position.hpp"
 #include <iostream>
 
-Move movestack[12];
-int movestackidx, capstackidx;
-int capstack[12];
-
 U64 perft(Position *pos, int depth) {
 	assert(pos);
 	assert(depth >= 0);

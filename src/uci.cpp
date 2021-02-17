@@ -99,8 +99,6 @@ void UCI_Listen() {
 			U64 pnodes;
 			U64 nps;
 			depth = std::stoi(tokens[1]);
-			movestackidx = 0;
-			capstackidx = 0;
 			for (int i = 1; i <= depth; i++) {
 				clock_t begin = clock();
 				pnodes = perft(&pos, i);
