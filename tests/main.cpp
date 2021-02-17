@@ -1,5 +1,6 @@
 #include "ischeck.hpp"
 #include "kingpos.hpp"
+#include "move_string.hpp"
 #include "perft.hpp"
 #include <iomanip>
 #include <iostream>
@@ -11,5 +12,6 @@ int main() {
 	std::cout << "Perft: " << test::perft() << "\n";
 	std::cout << "isCheck: " << test::isCheck() << "\n";
 	std::cout << "Kingpos: " << test::kingPos() << "\n";
+	std::cout << "Move::string(): " << test::moveString() << "\n";
 	return 0;
 }
