@@ -17,7 +17,7 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		const auto cappiece = getPiece(pos, movesquare);
+		const auto cappiece = pos->getPiece(movesquare);
 		if (cappiece != NONE)
 			moves[num_moves] = Move(square, movesquare, NONE, KING, cappiece, CAPTURE);
 		else
@@ -29,13 +29,13 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	if (!forqsearch) {
 		if (pos->tomove == WHITE) {
 			// King side castling
-			if ((pos->WcastleKS == 1) && getPiece(pos, F1) == NONE && getPiece(pos, G1) == NONE && !isAttacked(pos, E1, BLACK) && !isAttacked(pos, F1, BLACK) && !isAttacked(pos, G1, BLACK)) {
+			if ((pos->WcastleKS == 1) && pos->getPiece(F1) == NONE && pos->getPiece(G1) == NONE && !isAttacked(pos, E1, BLACK) && !isAttacked(pos, F1, BLACK) && !isAttacked(pos, G1, BLACK)) {
 				// Add move
 				moves[num_moves] = Move(E1, G1, NONE, KING, NONE, KSC);
 				num_moves += 1;
 			}
 			// Queenside castling
-			if ((pos->WcastleQS == 1) && getPiece(pos, D1) == NONE && getPiece(pos, C1) == NONE && getPiece(pos, B1) == NONE && !isAttacked(pos, E1, BLACK) && !isAttacked(pos, D1, BLACK) && !isAttacked(pos, C1, BLACK)) {
+			if ((pos->WcastleQS == 1) && pos->getPiece(D1) == NONE && pos->getPiece(C1) == NONE && pos->getPiece(B1) == NONE && !isAttacked(pos, E1, BLACK) && !isAttacked(pos, D1, BLACK) && !isAttacked(pos, C1, BLACK)) {
 				// Add move
 				moves[num_moves] = Move(E1, C1, NONE, KING, NONE, QSC);
 				num_moves += 1;
@@ -44,7 +44,7 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 		// black castling
 		else if (pos->tomove == BLACK) {
 			// Kingside castling
-			if ((pos->BcastleKS == 1) && getPiece(pos, F8) == NONE && getPiece(pos, G8) == NONE && !isAttacked(pos, E8, WHITE) && !isAttacked(pos, F8, WHITE) && !isAttacked(pos, G8, WHITE)) {
+			if ((pos->BcastleKS == 1) && pos->getPiece(F8) == NONE && pos->getPiece(G8) == NONE && !isAttacked(pos, E8, WHITE) && !isAttacked(pos, F8, WHITE) && !isAttacked(pos, G8, WHITE)) {
 				// Add move
 				if (!forqsearch) {
 					moves[num_moves] = Move(E8, G8, NONE, KING, NONE, KSC);
@@ -52,7 +52,7 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				}
 			}
 			// Queenside castling
-			if ((pos->BcastleQS == 1) && getPiece(pos, D8) == NONE && getPiece(pos, C8) == NONE && getPiece(pos, B8) == NONE && !isAttacked(pos, E8, WHITE) && !isAttacked(pos, D8, WHITE) && !isAttacked(pos, C8, WHITE)) {
+			if ((pos->BcastleQS == 1) && pos->getPiece(D8) == NONE && pos->getPiece(C8) == NONE && pos->getPiece(B8) == NONE && !isAttacked(pos, E8, WHITE) && !isAttacked(pos, D8, WHITE) && !isAttacked(pos, C8, WHITE)) {
 				// Add move
 				moves[num_moves] = Move(E8, C8, NONE, KING, NONE, QSC);
 				num_moves += 1;
@@ -73,7 +73,7 @@ int genKnightMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		const auto cappiece = getPiece(pos, movesquare);
+		const auto cappiece = pos->getPiece(movesquare);
 		if (cappiece != NONE)
 			moves[num_moves] = Move(square, movesquare, NONE, KNIGHT, cappiece, CAPTURE);
 		else
@@ -94,7 +94,7 @@ int genBishopMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		const auto cappiece = getPiece(pos, movesquare);
+		const auto cappiece = pos->getPiece(movesquare);
 		if (cappiece != NONE)
 			moves[num_moves] = Move(square, movesquare, NONE, BISHOP, cappiece, CAPTURE);
 		else
@@ -115,7 +115,7 @@ int genRookMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		const auto cappiece = getPiece(pos, movesquare);
+		const auto cappiece = pos->getPiece(movesquare);
 		if (cappiece != NONE)
 			moves[num_moves] = Move(square, movesquare, NONE, ROOK, cappiece, CAPTURE);
 		else
@@ -136,7 +136,7 @@ int genQueenMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		const auto cappiece = getPiece(pos, movesquare);
+		const auto cappiece = pos->getPiece(movesquare);
 		if (cappiece != NONE)
 			moves[num_moves] = Move(square, movesquare, NONE, QUEEN, cappiece, CAPTURE);
 		else
@@ -202,7 +202,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			BBleftcaptures &= BBleftcaptures - 1;
 			int sourcesquare = targetsquare - 7;
 			if (getrank(targetsquare) == 7) {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
@@ -212,7 +212,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
@@ -226,7 +226,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			BBrightcaptures &= BBrightcaptures - 1;
 			int sourcesquare = targetsquare - 9;
 			if (getrank(targetsquare) == 7) {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
@@ -236,7 +236,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
@@ -291,7 +291,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			BBleftcaptures &= BBleftcaptures - 1;
 			int sourcesquare = targetsquare + 9;
 			if (getrank(targetsquare) == 0) {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
@@ -301,7 +301,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
@@ -314,7 +314,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			BBrightcaptures &= BBrightcaptures - 1;
 			int sourcesquare = targetsquare + 7;
 			if (getrank(targetsquare) == 0) {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
@@ -324,7 +324,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
-				char cappiece = getPiece(pos, targetsquare);
+				char cappiece = pos->getPiece(targetsquare);
 				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
@@ -357,9 +357,9 @@ int genMoves(Position *pos, Move *moves, int forqsearch) {
 					continue;
 				}
 				const int idx = fileranktosquareidx(nx, ny);
-				const char piece = getPiece(pos, idx);
+				const char piece = pos->getPiece(idx);
 
-				if (piece == PAWN && getColour(pos, idx) == BLACK) {
+				if (piece == PAWN && pos->getColour(idx) == BLACK) {
 					// Add move
 					if (!forqsearch) {
 						moves[num_moves] = Move(idx, pos->epsquare, NONE, piece, NONE, EN_PASSANT);
@@ -376,8 +376,8 @@ int genMoves(Position *pos, Move *moves, int forqsearch) {
 					continue;
 				}
 				const int idx = fileranktosquareidx(nx, ny);
-				const char piece = getPiece(pos, idx);
-				if (piece == PAWN && getColour(pos, idx) == WHITE) {
+				const char piece = pos->getPiece(idx);
+				if (piece == PAWN && pos->getColour(idx) == WHITE) {
 					// Add move
 					if (!forqsearch) {
 						moves[num_moves] = Move(idx, pos->epsquare, NONE, piece, NONE, EN_PASSANT);
@@ -392,7 +392,7 @@ int genMoves(Position *pos, Move *moves, int forqsearch) {
 
 	while (BBallpieces != 0) {
 		int square = __builtin_ctzll(BBallpieces);
-		char piece = getPiece(pos, square);
+		char piece = pos->getPiece(square);
 		switch (piece) {
 		case KING:
 			num_moves += genKingMoves(pos, square, &moves[num_moves], forqsearch);

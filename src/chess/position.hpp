@@ -36,6 +36,14 @@ class Position {
   public:
 	Move find_move(const std::string &movestr) const;
 
+	char getPiece(const int sq) const;
+
+	int getColour(int sq) const;
+
+	void setPiece(int sq, int colour, char piece);
+
+	void clearSquare(int sq);
+
 	U64 pieces[6];
 	U64 colours[2];
 	int tomove;
@@ -59,11 +67,7 @@ void dspBB(U64 BB);
 int fileranktosquareidx(int file, int rank);
 int getrank(int square);
 int getfile(int square);
-char getPiece(const Position *pos, int sq);
 int strsquaretoidx(std::string square);
-int getColour(Position *pos, int sq);
-void setPiece(Position *pos, int sq, int colour, char piece);
-void clearSquare(Position *pos, int sq);
 void dspBoard(Position *pos);
 void parsefen(Position *pos, const std::string &ofen);
 

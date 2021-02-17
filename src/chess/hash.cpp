@@ -65,8 +65,8 @@ U64 generateHash(Position *pos) {
 	while (BBoccupied != 0) {
 		int square = __builtin_ctzll(BBoccupied);
 		BBoccupied &= BBoccupied - 1;
-		int sqpiece = getPiece(pos, square);
-		int sqcol = getColour(pos, square);
+		int sqpiece = pos->getPiece(square);
+		int sqcol = pos->getColour(square);
 		int piece = pieceintval(sqpiece, sqcol);
 		zobrist ^= pieceHash[piece][square];
 	}

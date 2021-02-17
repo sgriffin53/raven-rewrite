@@ -27,53 +27,51 @@ int strsquaretoidx(std::string square) {
 	return fileranktosquareidx(file, rank);
 }
 
-char getPiece(const Position *pos, int sq) {
-	assert(pos);
+char Position::getPiece(const int sq) const {
 	assert(sq >= 0 && sq <= 63);
 	U64 BBsquare = (1ULL << sq);
 	for (int i = PAWN; i <= KING; i++) {
-		if (pos->pieces[i] & BBsquare)
+		if (pieces[i] & BBsquare)
 			return i;
 	}
 	return NONE;
 }
 
-int getColour(Position *pos, int sq) {
+int Position::getColour(int sq) const {
 	U64 BBsquare = (1ULL << sq);
 	for (int i = 0; i < 2; i++) {
-		if (pos->colours[i] & BBsquare)
+		if (colours[i] & BBsquare)
 			return i;
 	}
 	return NONE;
 }
 
-void setPiece(Position *pos, int sq, int colour, char piece) {
-	assert(pos);
+void Position::setPiece(int sq, int colour, char piece) {
 	assert(sq >= 0 && sq <= 63);
 	U64 BBsquare = (1ULL << sq);
 	// clear bitboard of old square
-	int oldpiece = getPiece(pos, sq);
-	pos->pieces[oldpiece] &= ~BBsquare;
+	int oldpiece = getPiece(sq);
+	pieces[oldpiece] &= ~BBsquare;
 	// clear white and black piece bitboards of that square
-	pos->colours[WHITE] &= ~BBsquare;
-	pos->colours[BLACK] &= ~BBsquare;
+	colours[WHITE] &= ~BBsquare;
+	colours[BLACK] &= ~BBsquare;
 	if (piece != NONE)
-		pos->pieces[piece] |= BBsquare;
+		pieces[piece] |= BBsquare;
 	if (piece == KING) {
 		if (colour == WHITE)
-			pos->Wkingpos = sq;
+			Wkingpos = sq;
 		else if (colour == BLACK)
-			pos->Bkingpos = sq;
+			Bkingpos = sq;
 	}
-	pos->colours[colour] |= BBsquare;
+	colours[colour] |= BBsquare;
 }
 
-void clearSquare(Position *pos, int sq) {
+void Position::clearSquare(int sq) {
 	// clears a square of a given piece
-	pos->colours[WHITE] &= ~(1ULL << sq);
-	pos->colours[BLACK] &= ~(1ULL << sq);
-	int oldpiece = getPiece(pos, sq);
-	pos->pieces[oldpiece] &= ~(1ULL << sq);
+	colours[WHITE] &= ~(1ULL << sq);
+	colours[BLACK] &= ~(1ULL << sq);
+	int oldpiece = getPiece(sq);
+	pieces[oldpiece] &= ~(1ULL << sq);
 }
 
 void dspBB(U64 BB) {
@@ -113,7 +111,7 @@ void dspBoard(Position *pos) {
 	for (rank = 7; rank >= 0; rank--) {
 		for (file = 0; file <= 7; file++) {
 			sq = fileranktosquareidx(file, rank);
-			char piece = getPiece(pos, sq);
+			char piece = pos->getPiece(sq);
 			if (piece == NONE)
 				piece = ' ';
 			else if (piece == PAWN)
@@ -128,7 +126,7 @@ void dspBoard(Position *pos) {
 				piece = 'Q';
 			else if (piece == KING)
 				piece = 'K';
-			if (getColour(pos, sq) == BLACK)
+			if (pos->getColour(sq) == BLACK)
 				piece = tolower(piece);
 			std::cout << " " << piece << " |";
 		}
@@ -360,8 +358,8 @@ Move Position::find_move(const std::string &movestr) const {
 	prompiece += movestr[4];
 	int startsquareidx = strsquaretoidx(startsquare);
 	int endsquareidx = strsquaretoidx(endsquare);
-	char cappiece = getPiece(this, endsquareidx);
-	char piece = getPiece(this, startsquareidx);
+	char cappiece = getPiece(endsquareidx);
+	char piece = getPiece(startsquareidx);
 	char prom = NONE;
 
 	switch (prompiece[0]) {
@@ -380,12 +378,12 @@ Move Position::find_move(const std::string &movestr) const {
 	}
 
 	int isep = 0;
-	if (piece == PAWN && endsquareidx == this->epsquare) {
-		if (this->tomove == WHITE) {
+	if (piece == PAWN && endsquareidx == epsquare) {
+		if (tomove == WHITE) {
 			if (startsquareidx == endsquareidx - 11 || startsquareidx == endsquareidx - 9) {
 				isep = 1;
 			}
-		} else if (this->tomove == BLACK) {
+		} else if (tomove == BLACK) {
 			if (startsquareidx == endsquareidx + 11 || startsquareidx == endsquareidx + 9) {
 				isep = 1;
 			}
@@ -394,11 +392,11 @@ Move Position::find_move(const std::string &movestr) const {
 
 	int isdouble = 0;
 	if (piece == PAWN) {
-		if (this->tomove == WHITE) {
+		if (tomove == WHITE) {
 			if (getrank(startsquareidx) == 1 && getrank(endsquareidx) == 3) {
 				isdouble = 1;
 			}
-		} else if (this->tomove == BLACK) {
+		} else if (tomove == BLACK) {
 			if (getrank(startsquareidx) == 6 && getrank(endsquareidx) == 4) {
 				isdouble = 1;
 			}
@@ -408,13 +406,13 @@ Move Position::find_move(const std::string &movestr) const {
 	int isqsc = 0;
 	int isksc = 0;
 	if (piece == KING) {
-		if (this->tomove == WHITE) {
+		if (tomove == WHITE) {
 			if (startsquareidx == E1 && endsquareidx == G1)
 				isksc = 1;
 			else if (startsquareidx == E1 && endsquareidx == C1)
 				isqsc = 1;
 		}
-		if (this->tomove == BLACK) {
+		if (tomove == BLACK) {
 			if (startsquareidx == E8 && endsquareidx == G8)
 				isksc = 1;
 			else if (startsquareidx == E8 && endsquareidx == C8)

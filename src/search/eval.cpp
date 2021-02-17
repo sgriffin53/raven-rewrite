@@ -302,8 +302,8 @@ void evalPST(Position *pos, int *openingEval, int *endgameEval) {
 		int square = __builtin_ctzll(BBpieces);
 		// BBoccupied &= ~(1ULL << square);
 		BBpieces &= BBpieces - 1;
-		char piece = getPiece(pos, square);
-		int col = getColour(pos, square);
+		char piece = pos->getPiece(square);
+		int col = pos->getColour(square);
 		*openingEval += PSTval(col, piece, square, 'O');
 		*endgameEval += PSTval(col, piece, square, 'E');
 	}

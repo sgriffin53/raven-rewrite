@@ -22,9 +22,9 @@ void makeMove(const Move *move, Position *pos) {
 
 	pos->colours[WHITE] &= ~(1ULL << fromsquare);
 	pos->colours[BLACK] &= ~(1ULL << fromsquare);
-	int oldpiece = getPiece(pos, fromsquare);
+	int oldpiece = pos->getPiece(fromsquare);
 	pos->pieces[oldpiece] &= ~(1ULL << fromsquare);
-	setPiece(pos, tosquare, pos->tomove, piece);
+	pos->setPiece(tosquare, pos->tomove, piece);
 
 	if (cappiece != NONE) {
 		pos->halfmoves = 0;
@@ -33,7 +33,7 @@ void makeMove(const Move *move, Position *pos) {
 		pos->halfmoves = 0;
 		if (torank == 7) {
 			// promotion
-			setPiece(pos, tosquare, colour, prompiece);
+			pos->setPiece(tosquare, colour, prompiece);
 			pos->colours[WHITE] |= (1ULL << tosquare);
 			if (prompiece == QUEEN) {
 				pos->pieces[QUEEN] |= (1ULL << tosquare);
@@ -49,7 +49,7 @@ void makeMove(const Move *move, Position *pos) {
 			// pawn moves en passant
 			// remove captured piece
 			// setPiece(pos,epsquare - 8,NONE, NONE);
-			clearSquare(pos, epsquare - 8);
+			pos->clearSquare(epsquare - 8);
 		}
 		if (abs(fromsquare - tosquare) == 16) {
 			newepsquare = tosquare - 8;
@@ -58,7 +58,7 @@ void makeMove(const Move *move, Position *pos) {
 		pos->halfmoves = 0;
 		if (torank == 0) {
 			// promotion
-			setPiece(pos, tosquare, colour, prompiece);
+			pos->setPiece(tosquare, colour, prompiece);
 			pos->colours[BLACK] |= (1ULL << tosquare);
 			if (prompiece == QUEEN) {
 				pos->pieces[QUEEN] |= (1ULL << tosquare);
@@ -74,7 +74,7 @@ void makeMove(const Move *move, Position *pos) {
 			// pawn moves en passant
 			// remove captured piece
 			// setPiece(pos,epsquare + 8, NONE, NONE);
-			clearSquare(pos, epsquare + 8);
+			pos->clearSquare(epsquare + 8);
 		}
 		if (abs(fromsquare - tosquare) == 16) {
 			// pawn moves 2 spaces forward
@@ -87,21 +87,21 @@ void makeMove(const Move *move, Position *pos) {
 
 		if ((fromsquare == E1) && (tosquare == G1)) { // white kingside castling
 			// clear E1
-			clearSquare(pos, E1);
-			setPiece(pos, G1, colour, KING);
-			setPiece(pos, F1, colour, ROOK);
+			pos->clearSquare(E1);
+			pos->setPiece(G1, colour, KING);
+			pos->setPiece(F1, colour, ROOK);
 			// clear H1
-			clearSquare(pos, H1);
+			pos->clearSquare(H1);
 			pos->Wcastled = 1;
 		}
 
 		if ((fromsquare == E1) && (tosquare == C1)) { // white queenside castling
 			// clear E1
-			clearSquare(pos, E1);
-			setPiece(pos, C1, colour, KING);
-			setPiece(pos, D1, colour, ROOK);
+			pos->clearSquare(E1);
+			pos->setPiece(C1, colour, KING);
+			pos->setPiece(D1, colour, ROOK);
 			// clear A1
-			clearSquare(pos, A1);
+			pos->clearSquare(A1);
 			pos->Wcastled = 1;
 		}
 	} else if (piece == KING && colour == BLACK) { // black king
@@ -110,20 +110,20 @@ void makeMove(const Move *move, Position *pos) {
 		pos->Bkingpos = tosquare;
 		if ((fromsquare == E8) && (tosquare == G8)) { // black kingside castling
 			// clear E8
-			clearSquare(pos, E8);
-			setPiece(pos, G8, colour, KING);
-			setPiece(pos, F8, colour, ROOK);
+			pos->clearSquare(E8);
+			pos->setPiece(G8, colour, KING);
+			pos->setPiece(F8, colour, ROOK);
 			// clear H8
-			clearSquare(pos, H8);
+			pos->clearSquare(H8);
 			pos->Bcastled = 1;
 		}
 		if ((fromsquare == E8) && (tosquare == C8)) { // black queenside castling
 			// clear E8
-			clearSquare(pos, E8);
-			setPiece(pos, C8, colour, KING);
-			setPiece(pos, D8, colour, ROOK);
+			pos->clearSquare(E8);
+			pos->setPiece(C8, colour, KING);
+			pos->setPiece(D8, colour, ROOK);
 			// clear A8
-			clearSquare(pos, A8);
+			pos->clearSquare(A8);
 			pos->Bcastled = 1;
 		}
 	}
@@ -275,7 +275,7 @@ void unmakeMovestr(std::string move, Position *pos, int lastcap) {
 	int startsquareidx = strsquaretoidx(startsquare);
 	int endsquareidx = strsquaretoidx(endsquare);
 	int cappiece = lastcap;
-	int piece = getPiece(pos, endsquareidx);
+	int piece = pos->getPiece(endsquareidx);
 	int prom = NONE;
 	switch (prompiece[0]) {
 	case 'q':
