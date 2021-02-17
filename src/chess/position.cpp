@@ -189,7 +189,7 @@ void Position::setFen(const std::string &fen) {
 	BcastleKS = 0;
 	BcastleQS = 0;
 
-	int numtokens;
+	int numtokens = 0;
 
 	std::string line, intermediate;
 	// std::string intermediate;
