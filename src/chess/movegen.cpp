@@ -6,7 +6,6 @@
 #include <cassert>
 #include <iostream>
 
-
 int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	U64 BBattacks = 0ULL;
 	int num_moves = 0;
@@ -18,15 +17,11 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		moves[num_moves].from = square;
-		moves[num_moves].to = movesquare;
-		moves[num_moves].prom = NONE;
-		moves[num_moves].cappiece = getPiece(pos, movesquare);
-		if (moves[num_moves].cappiece != NONE)
-			moves[num_moves].type = CAPTURE;
+		const auto cappiece = getPiece(pos, movesquare);
+		if (cappiece != NONE)
+			moves[num_moves] = Move(square, movesquare, NONE, KING, cappiece, CAPTURE);
 		else
-			moves[num_moves].type = NORMAL;
-		moves[num_moves].piece = KING;
+			moves[num_moves] = Move(square, movesquare, NONE, KING, cappiece, NORMAL);
 		num_moves++;
 	}
 	// castling moves
@@ -36,23 +31,13 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			// King side castling
 			if ((pos->WcastleKS == 1) && getPiece(pos, F1) == NONE && getPiece(pos, G1) == NONE && !isAttacked(pos, E1, BLACK) && !isAttacked(pos, F1, BLACK) && !isAttacked(pos, G1, BLACK)) {
 				// Add move
-				moves[num_moves].from = E1;
-				moves[num_moves].to = G1;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = KING;
-				moves[num_moves].type = KSC;
+				moves[num_moves] = Move(E1, G1, NONE, KING, NONE, KSC);
 				num_moves += 1;
 			}
 			// Queenside castling
 			if ((pos->WcastleQS == 1) && getPiece(pos, D1) == NONE && getPiece(pos, C1) == NONE && getPiece(pos, B1) == NONE && !isAttacked(pos, E1, BLACK) && !isAttacked(pos, D1, BLACK) && !isAttacked(pos, C1, BLACK)) {
 				// Add move
-				moves[num_moves].from = E1;
-				moves[num_moves].to = C1;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = KING;
-				moves[num_moves].type = QSC;
+				moves[num_moves] = Move(E1, C1, NONE, KING, NONE, QSC);
 				num_moves += 1;
 			}
 		}
@@ -62,24 +47,14 @@ int genKingMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			if ((pos->BcastleKS == 1) && getPiece(pos, F8) == NONE && getPiece(pos, G8) == NONE && !isAttacked(pos, E8, WHITE) && !isAttacked(pos, F8, WHITE) && !isAttacked(pos, G8, WHITE)) {
 				// Add move
 				if (!forqsearch) {
-					moves[num_moves].from = E8;
-					moves[num_moves].to = G8;
-					moves[num_moves].prom = NONE;
-					moves[num_moves].cappiece = NONE;
-					moves[num_moves].piece = KING;
-					moves[num_moves].type = KSC;
+					moves[num_moves] = Move(E8, G8, NONE, KING, NONE, KSC);
 					num_moves += 1;
 				}
 			}
 			// Queenside castling
 			if ((pos->BcastleQS == 1) && getPiece(pos, D8) == NONE && getPiece(pos, C8) == NONE && getPiece(pos, B8) == NONE && !isAttacked(pos, E8, WHITE) && !isAttacked(pos, D8, WHITE) && !isAttacked(pos, C8, WHITE)) {
 				// Add move
-				moves[num_moves].from = E8;
-				moves[num_moves].to = C8;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = KING;
-				moves[num_moves].type = QSC;
+				moves[num_moves] = Move(E8, C8, NONE, KING, NONE, QSC);
 				num_moves += 1;
 			}
 		}
@@ -98,15 +73,11 @@ int genKnightMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		moves[num_moves].from = square;
-		moves[num_moves].to = movesquare;
-		moves[num_moves].prom = NONE;
-		moves[num_moves].cappiece = getPiece(pos, movesquare);
-		moves[num_moves].piece = KNIGHT;
-		if (moves[num_moves].cappiece != NONE)
-			moves[num_moves].type = CAPTURE;
+		const auto cappiece = getPiece(pos, movesquare);
+		if (cappiece != NONE)
+			moves[num_moves] = Move(square, movesquare, NONE, KNIGHT, cappiece, CAPTURE);
 		else
-			moves[num_moves].type = NORMAL;
+			moves[num_moves] = Move(square, movesquare, NONE, KNIGHT, cappiece, NORMAL);
 		num_moves++;
 	}
 	return num_moves;
@@ -123,15 +94,11 @@ int genBishopMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		moves[num_moves].from = square;
-		moves[num_moves].to = movesquare;
-		moves[num_moves].prom = NONE;
-		moves[num_moves].cappiece = getPiece(pos, movesquare);
-		moves[num_moves].piece = BISHOP;
-		if (moves[num_moves].cappiece != NONE)
-			moves[num_moves].type = CAPTURE;
+		const auto cappiece = getPiece(pos, movesquare);
+		if (cappiece != NONE)
+			moves[num_moves] = Move(square, movesquare, NONE, BISHOP, cappiece, CAPTURE);
 		else
-			moves[num_moves].type = NORMAL;
+			moves[num_moves] = Move(square, movesquare, NONE, BISHOP, cappiece, NORMAL);
 		num_moves++;
 	}
 	return num_moves;
@@ -148,15 +115,11 @@ int genRookMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		moves[num_moves].from = square;
-		moves[num_moves].to = movesquare;
-		moves[num_moves].prom = NONE;
-		moves[num_moves].cappiece = getPiece(pos, movesquare);
-		moves[num_moves].piece = ROOK;
-		if (moves[num_moves].cappiece != NONE)
-			moves[num_moves].type = CAPTURE;
+		const auto cappiece = getPiece(pos, movesquare);
+		if (cappiece != NONE)
+			moves[num_moves] = Move(square, movesquare, NONE, ROOK, cappiece, CAPTURE);
 		else
-			moves[num_moves].type = NORMAL;
+			moves[num_moves] = Move(square, movesquare, NONE, ROOK, cappiece, NORMAL);
 		num_moves++;
 	}
 	return num_moves;
@@ -173,15 +136,11 @@ int genQueenMoves(Position *pos, int square, Move *moves, int forqsearch) {
 	while (BBattacks != 0) {
 		int movesquare = __builtin_ctzll(BBattacks);
 		BBattacks &= BBattacks - 1;
-		moves[num_moves].from = square;
-		moves[num_moves].to = movesquare;
-		moves[num_moves].prom = NONE;
-		moves[num_moves].cappiece = getPiece(pos, movesquare);
-		moves[num_moves].piece = QUEEN;
-		if (moves[num_moves].cappiece != NONE)
-			moves[num_moves].type = CAPTURE;
+		const auto cappiece = getPiece(pos, movesquare);
+		if (cappiece != NONE)
+			moves[num_moves] = Move(square, movesquare, NONE, QUEEN, cappiece, CAPTURE);
 		else
-			moves[num_moves].type = NORMAL;
+			moves[num_moves] = Move(square, movesquare, NONE, QUEEN, cappiece, NORMAL);
 		num_moves++;
 	}
 	return num_moves;
@@ -206,12 +165,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				if (BBrank3blocked)
 					continue;
 				int sourcesquare = targetsquare - 16;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = DOUBLE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, NONE, DOUBLE);
 				num_moves++;
 			}
 		}
@@ -224,42 +178,17 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			BBsinglepushes &= BBsinglepushes - 1;
 			int sourcesquare = targetsquare - 8;
 			if (getrank(targetsquare) == 7) {
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = QUEEN;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, NONE, PROMO);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = ROOK;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, NONE, PROMO);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = BISHOP;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, BISHOP, piece, NONE, PROMO);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = KNIGHT;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, NONE, PROMO);
 				num_moves++;
 			} else {
 				if (!forqsearch) {
-					moves[num_moves].from = sourcesquare;
-					moves[num_moves].to = targetsquare;
-					moves[num_moves].prom = NONE;
-					moves[num_moves].cappiece = NONE;
-					moves[num_moves].piece = piece;
-					moves[num_moves].type = NORMAL;
+					moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, NONE, NORMAL);
 					num_moves++;
 				}
 			}
@@ -274,42 +203,17 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			int sourcesquare = targetsquare - 7;
 			if (getrank(targetsquare) == 7) {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = QUEEN;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = ROOK;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = BISHOP;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, BISHOP, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = KNIGHT;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
 		}
@@ -323,42 +227,17 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			int sourcesquare = targetsquare - 9;
 			if (getrank(targetsquare) == 7) {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = QUEEN;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = ROOK;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = BISHOP;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, BISHOP, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = KNIGHT;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
 		}
@@ -376,12 +255,7 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 				if (BBrank3blocked)
 					continue;
 				int sourcesquare = targetsquare + 16;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = DOUBLE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, NONE, DOUBLE);
 				num_moves++;
 			}
 		}
@@ -394,42 +268,17 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			BBsinglepushes &= BBsinglepushes - 1;
 			int sourcesquare = targetsquare + 8;
 			if (getrank(targetsquare) == 0) {
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = QUEEN;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, NONE, PROMO);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = ROOK;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, NONE, PROMO);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = BISHOP;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, BISHOP, piece, NONE, PROMO);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = KNIGHT;
-				moves[num_moves].cappiece = NONE;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO;
+				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, NONE, PROMO);
 				num_moves++;
 			} else {
 				if (!forqsearch) {
-					moves[num_moves].from = sourcesquare;
-					moves[num_moves].to = targetsquare;
-					moves[num_moves].prom = NONE;
-					moves[num_moves].cappiece = NONE;
-					moves[num_moves].piece = piece;
-					moves[num_moves].type = NORMAL;
+					moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, NONE, NORMAL);
 					num_moves++;
 				}
 			}
@@ -443,42 +292,17 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			int sourcesquare = targetsquare + 9;
 			if (getrank(targetsquare) == 0) {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = QUEEN;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = ROOK;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = BISHOP;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, BISHOP, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = KNIGHT;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
 		}
@@ -491,42 +315,17 @@ int genAllPawnMoves(Position *pos, int square, Move *moves, int forqsearch) {
 			int sourcesquare = targetsquare + 7;
 			if (getrank(targetsquare) == 0) {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = QUEEN;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, QUEEN, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = ROOK;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, ROOK, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = BISHOP;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, BISHOP, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = KNIGHT;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = PROMO_CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, KNIGHT, piece, cappiece, PROMO_CAPTURE);
 				num_moves++;
 			} else {
 				char cappiece = getPiece(pos, targetsquare);
-				moves[num_moves].from = sourcesquare;
-				moves[num_moves].to = targetsquare;
-				moves[num_moves].prom = NONE;
-				moves[num_moves].cappiece = cappiece;
-				moves[num_moves].piece = piece;
-				moves[num_moves].type = CAPTURE;
+				moves[num_moves] = Move(sourcesquare, targetsquare, NONE, piece, cappiece, CAPTURE);
 				num_moves++;
 			}
 		}
@@ -563,12 +362,7 @@ int genMoves(Position *pos, Move *moves, int forqsearch) {
 				if (piece == PAWN && getColour(pos, idx) == BLACK) {
 					// Add move
 					if (!forqsearch) {
-						moves[num_moves].from = idx;
-						moves[num_moves].to = pos->epsquare;
-						moves[num_moves].prom = NONE;
-						moves[num_moves].cappiece = NONE;
-						moves[num_moves].piece = piece;
-						moves[num_moves].type = EN_PASSANT;
+						moves[num_moves] = Move(idx, pos->epsquare, NONE, piece, NONE, EN_PASSANT);
 						num_moves++;
 					}
 				}
@@ -586,12 +380,7 @@ int genMoves(Position *pos, Move *moves, int forqsearch) {
 				if (piece == PAWN && getColour(pos, idx) == WHITE) {
 					// Add move
 					if (!forqsearch) {
-						moves[num_moves].from = idx;
-						moves[num_moves].to = pos->epsquare;
-						moves[num_moves].prom = NONE;
-						moves[num_moves].cappiece = NONE;
-						moves[num_moves].piece = piece;
-						moves[num_moves].type = EN_PASSANT;
+						moves[num_moves] = Move(idx, pos->epsquare, NONE, piece, NONE, EN_PASSANT);
 						num_moves++;
 					}
 				}

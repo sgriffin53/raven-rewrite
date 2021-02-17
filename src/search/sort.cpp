@@ -26,8 +26,8 @@ void sortMoves(Position *pos, Move *moves, const int num_moves, Move *TTmove, in
 	int scores[MAX_MOVES];
 	for (int i = 0; i < num_moves; i++) {
 		scores[i] = 0;
-		int cappiece = moves[i].cappiece;
-		int piece = moves[i].piece;
+		int cappiece = moves[i].cappiece();
+		int piece = moves[i].piece();
 
 		if (cappiece != NONE && cappiece > piece) {
 			scores[i] = 1000000 + mvvlva(piece, cappiece);

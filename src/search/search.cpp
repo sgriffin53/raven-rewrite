@@ -141,7 +141,7 @@ int alphaBeta(Position *pos, int alpha, int beta, int depthleft, int nullmove, i
 
 		std::vector<Move> childPV;
 
-		int cappiece = moves[i].cappiece;
+		int cappiece = moves[i].cappiece();
 		// Position origpos = *pos;
 		makeMove(&moves[i], pos);
 

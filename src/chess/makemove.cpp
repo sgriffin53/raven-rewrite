@@ -7,13 +7,13 @@
 
 void makeMove(const Move *move, Position *pos) {
 	pos->halfmoves += 1;
-	int piece = move->piece;
-	int cappiece = move->cappiece;
+	int piece = move->piece();
+	int cappiece = move->cappiece();
 	int newepsquare = -1; // init to -1, change to ep square if there is one
-	int torank = getrank(move->to);
-	int prompiece = move->prom;
-	int tosquare = move->to;
-	int fromsquare = move->from;
+	int torank = getrank(move->to());
+	int prompiece = move->prom();
+	int tosquare = move->to();
+	int fromsquare = move->from();
 	int epsquare = pos->epsquare;
 	int colour = pos->tomove;
 
@@ -45,7 +45,7 @@ void makeMove(const Move *move, Position *pos) {
 				pos->pieces[KNIGHT] |= (1ULL << tosquare);
 			}
 		}
-		if (move->to == epsquare) {
+		if (move->to() == epsquare) {
 			// pawn moves en passant
 			// remove captured piece
 			// setPiece(pos,epsquare - 8,NONE, NONE);
@@ -70,7 +70,7 @@ void makeMove(const Move *move, Position *pos) {
 				pos->pieces[KNIGHT] |= (1ULL << tosquare);
 			}
 		}
-		if (move->to == epsquare) {
+		if (move->to() == epsquare) {
 			// pawn moves en passant
 			// remove captured piece
 			// setPiece(pos,epsquare + 8, NONE, NONE);
@@ -171,8 +171,8 @@ void makeMove(const Move *move, Position *pos) {
 }
 
 void unmakeMove(const Move *move, Position *pos) {
-	assert(move->type >= NORMAL && move->type <= QSC);
-	assert(move->piece >= PAWN && move->piece <= NONE);
+	assert(move->type() >= NORMAL && move->type() <= QSC);
+	assert(move->piece() >= PAWN && move->piece() <= NONE);
 	pos->irrevidx--;
 	pos->epsquare = pos->irrev[pos->irrevidx].epsquare;
 	pos->WcastleQS = pos->irrev[pos->irrevidx].WcastleQS;
@@ -187,7 +187,7 @@ void unmakeMove(const Move *move, Position *pos) {
 
 	pos->tomove = !pos->tomove;
 	U64 ksc_king[2], ksc_rook[2], qsc_king[2], qsc_rook[2];
-	if (move->type == KSC || move->type == QSC) {
+	if (move->type() == KSC || move->type() == QSC) {
 		ksc_king[WHITE] = 1ULL << E1 | 1ULL << G1;
 		ksc_king[BLACK] = 1ULL << E8 | 1ULL << G8;
 
@@ -200,35 +200,35 @@ void unmakeMove(const Move *move, Position *pos) {
 		qsc_rook[WHITE] = 1ULL << D1 | 1ULL << A1;
 		qsc_rook[BLACK] = 1ULL << D8 | 1ULL << A8;
 	}
-	U64 from = 1ULL << move->from;
-	U64 to = 1ULL << move->to;
-	switch (move->type) {
+	U64 from = 1ULL << move->from();
+	U64 to = 1ULL << move->to();
+	switch (move->type()) {
 	case NORMAL:
-		pos->pieces[move->piece] ^= to | from;
+		pos->pieces[move->piece()] ^= to | from;
 		pos->colours[pos->tomove] ^= to | from;
 		break;
 	case CAPTURE:
-		pos->pieces[move->piece] ^= to | from;
+		pos->pieces[move->piece()] ^= to | from;
 		pos->colours[pos->tomove] ^= to | from;
-		pos->pieces[move->cappiece] ^= to;
+		pos->pieces[move->cappiece()] ^= to;
 		pos->colours[!pos->tomove] ^= to;
 		break;
 	case DOUBLE:
-		pos->pieces[move->piece] ^= to | from;
+		pos->pieces[move->piece()] ^= to | from;
 		pos->colours[pos->tomove] ^= to | from;
 		break;
 	case PROMO:
 	case PROMO_CAPTURE:
-		pos->pieces[move->piece] ^= from;
-		pos->pieces[move->prom] ^= to;
+		pos->pieces[move->piece()] ^= from;
+		pos->pieces[move->prom()] ^= to;
 		pos->colours[pos->tomove] ^= to | from;
-		if (move->cappiece != NONE) {
-			pos->pieces[move->cappiece] ^= to;
+		if (move->cappiece() != NONE) {
+			pos->pieces[move->cappiece()] ^= to;
 			pos->colours[!pos->tomove] ^= to;
 		}
 		break;
 	case EN_PASSANT:
-		pos->pieces[move->piece] ^= to | from;
+		pos->pieces[move->piece()] ^= to | from;
 		pos->colours[pos->tomove] ^= to | from;
 		if (pos->tomove == WHITE) {
 			pos->pieces[PAWN] ^= to >> 8;
@@ -340,7 +340,7 @@ void makeMovestr(std::string move, Position *pos) {
 		movetype = KSC;
 	else if (isqsc)
 		movetype = QSC;
-	Move moveobj = {.from = startsquareidx, .to = endsquareidx, .prom = prom, .piece = piece, .cappiece = cappiece, .type = movetype};
+	Move moveobj = Move(startsquareidx, endsquareidx, prom, piece, cappiece, movetype);
 	makeMove(&moveobj, pos);
 }
 
@@ -433,6 +433,6 @@ void unmakeMovestr(std::string move, Position *pos, int lastcap) {
 	std::cout << "start: " << startsquareidx << " end: " << endsquareidx << "\n";
 	std::cout << "piece: " << piece << " cappiece " << cappiece << "\n";
 	std::cout << "type: " << movetype << "\n";
-	Move moveobj = {.from = startsquareidx, .to = endsquareidx, .prom = prom, .piece = piece, .cappiece = cappiece, .type = movetype};
+	Move moveobj = Move(startsquareidx, endsquareidx, prom, piece, cappiece, movetype);
 	unmakeMove(&moveobj, pos);
 }
