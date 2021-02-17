@@ -32,6 +32,10 @@ class Move {
 
 	std::string string() const;
 
+	bool operator==(const Move &rhs) const { return from() == rhs.from() && to() == rhs.to() && prom() == rhs.prom() && piece() == rhs.piece() && cappiece() == rhs.cappiece() && type() == rhs.type(); }
+
+	bool operator!=(const Move &rhs) const { return !(*this == rhs); }
+
   private:
 	int m_from;
 	int m_to;
