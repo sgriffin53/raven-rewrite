@@ -30,6 +30,8 @@ class Move {
 
 	int type() const { return m_type; }
 
+	std::string string() const;
+
   private:
 	int m_from;
 	int m_to;
@@ -38,7 +40,5 @@ class Move {
 	int m_cappiece;
 	int m_type;
 };
-
-std::string movetostr(Move move);
 
 #endif

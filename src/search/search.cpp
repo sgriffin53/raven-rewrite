@@ -222,17 +222,17 @@ Move search(Position pos, int searchdepth, int movetime, int strictmovetime) {
 			std::cout << " nps " << nps;
 		}
 		std::cout << " score cp " << score;
-		// std::cout << " pv " << movetostr(pv);
+		// std::cout << " pv " << pv.string();
 		std::cout << " pv ";
 		for (auto &m : fullPV) {
-			std::cout << movetostr(m) << " ";
+			std::cout << m.string() << " ";
 		}
 		std::cout << "\n";
 	}
 	time_spentms = getClock() - begin;
 	time_spent = time_spentms / 1000.0;
 	std::cout << "info time " << (int)(time_spent * 1000) << "\n";
-	std::cout << "bestmove " << movetostr(bestmove) << "\n";
+	std::cout << "bestmove " << bestmove.string() << "\n";
 	return pv;
 }
 
@@ -268,9 +268,9 @@ Move randmove(Position pos) {
 	//	std::cout << " nps 0";
 	//}
 	std::cout << " score cp 0";
-	std::cout << " pv " << movetostr(moves[idx]);
+	std::cout << " pv " << moves[idx].string();
 	std::cout << "\n";
-	std::cout << "bestmove " << movetostr(moves[idx]);
+	std::cout << "bestmove " << moves[idx].string();
 	std::cout << "\n";
 	return moves[idx];
 }

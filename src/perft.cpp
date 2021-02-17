@@ -6,7 +6,6 @@
 #include "chess/position.hpp"
 #include <iostream>
 
-
 Move movestack[12];
 int movestackidx, capstackidx;
 int capstack[12];
@@ -42,11 +41,11 @@ U64 perft(Position *pos, int depth) {
 			printf("orig pos:\n");
 
 
-			std::cout << "move: " << movetostr(moves[i]) << "\n";
+			std::cout << "move: " << moves[i].string() << "\n";
 			//std::cout << "move type: " << moves[i].type << "\n";
 			std::cout << "move history: " << movestackidx;
 			for (int j = 0;j < depth;j++) {
-				std::cout << movetostr(movestack[j]) << " ";
+				std::cout << movestack[j].string() << " ";
 			}
 			std::cout << "\n";
 			std::cout << "orig pos\n";
@@ -93,7 +92,7 @@ U64 sperft(Position *pos, int depth) {
 		pos->tomove = !pos->tomove;
 		U64 nodes = perft(pos, depth - 1);
 		total_nodes += nodes;
-		std::cout << movetostr(moves[i]) << " - " << nodes << "\n";
+		std::cout << moves[i].string() << " - " << nodes << "\n";
 		// Position aftermake = *pos;
 		unmakeMove(&moves[i], pos);
 	}

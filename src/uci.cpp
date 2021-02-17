@@ -127,7 +127,7 @@ void UCI_Listen() {
 			std::cout << num_moves << " num moves\n";
 			std::cout << "--\n";
 			for (j = 0; j < num_moves; j++) {
-				std::cout << j << " - " << movetostr(moves[j]) << "\n";
+				std::cout << j << " - " << moves[j].string() << "\n";
 			}
 		} else if (numtokens >= 2 && (tokens[0] == "moves" || tokens[0] == "move")) {
 			for (int i = 1; i < numtokens; i++) {
@@ -143,11 +143,11 @@ void UCI_Listen() {
 				std::cout << "hash at move " << i << ": " << pos.hashstack[i] << "\n";
 			}
 		} else if (tokens[0] == "unmove") {
-			// unmakeMovestr(movetostr(movestack[movestackidx-1]), &pos, capstack[capstackidx]);
+			// unmakeMovestr(movestack[movestackidx-1].string(), &pos, capstack[capstackidx]);
 		} else if (tokens[0] == "movehist") {
 			// std::cout << movestackidx;
 			// for (int j = 0;j < movestackidx;j++) {
-			//	std::cout << movetostr(movestack[j]) << " ";
+			//	std::cout << movestack[j].string() << " ";
 			//}
 		} else if (numtokens >= 2 && tokens[0] == "position") {
 			if (tokens[1] == "startpos") { // position startpos
