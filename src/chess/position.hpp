@@ -48,6 +48,8 @@ class Position {
 
 	void setFen(const std::string &fen);
 
+	std::string getFen() const;
+
 	U64 pieces[6];
 	U64 colours[2];
 	int tomove;

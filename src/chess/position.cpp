@@ -330,11 +330,16 @@ void Position::setFen(const std::string &fen) {
 	} else
 		epsquare = -1;
 
-	// std::cout << numtokens << "\n";
-	if (numtokens < 5 || tokens[4] == "-")
-		halfmoves = 0;
-	else
+	if (numtokens >= 5)
 		halfmoves = std::stoi(tokens[4]);
+	else
+		halfmoves = 0;
+
+	if (numtokens >= 6)
+		fullmoves = std::stoi(tokens[5]);
+	else
+		fullmoves = 0;
+
 	irrevidx = 0;
 	irrev[irrevidx].epsquare = epsquare;
 	irrev[irrevidx].WcastleQS = WcastleQS;
@@ -347,6 +352,89 @@ void Position::setFen(const std::string &fen) {
 	irrev[irrevidx].Wkingpos = Wkingpos;
 	irrev[irrevidx].Bkingpos = Bkingpos;
 	hashstack[irrevidx] = generateHash(this);
+}
+
+std::string Position::getFen() const {
+	const char pieceChars[2][6] = {
+		{'p', 'n', 'b', 'r', 'q', 'k'},
+		{'P', 'N', 'B', 'R', 'Q', 'K'},
+	};
+
+	std::string fen = "";
+
+	// Pieces
+	for (int r = 7; r >= 0; r--) {
+		int spaces = 0;
+
+		for (int f = 0; f < 8; ++f) {
+			const int sq = 8 * r + f;
+			const int piece = getPiece(sq);
+			const int colour = getColour(sq);
+
+			if (piece == NONE) {
+				spaces++;
+			} else {
+				if (spaces > 0) {
+					fen += std::to_string(spaces);
+					spaces = 0;
+				}
+				fen += pieceChars[colour][piece];
+			}
+		}
+
+		if (spaces > 0) {
+			fen += std::to_string(spaces);
+		}
+
+		if (r > 0) {
+			fen += "/";
+		}
+	}
+
+	// Side to move
+	if (tomove == WHITE) {
+		fen += " w ";
+	} else {
+		fen += " b ";
+	}
+
+	// Castling permissions
+	const bool hasCastling = WcastleQS | WcastleKS | BcastleKS | BcastleQS;
+	if (!hasCastling) {
+		fen += "-";
+	} else {
+		if (WcastleQS) {
+			fen += "K";
+		}
+		if (WcastleKS) {
+			fen += "Q";
+		}
+		if (BcastleKS) {
+			fen += "k";
+		}
+		if (BcastleQS) {
+			fen += "q";
+		}
+	}
+
+	// En passant
+	if (epsquare != -1) {
+		const int file = getfile(epsquare);
+		const int rank = getrank(epsquare);
+		fen += " ";
+		fen += static_cast<char>(file + 97);
+		fen += static_cast<char>(rank + 49);
+	} else {
+		fen += " -";
+	}
+
+	// Halfmove counter
+	fen += " " + std::to_string(halfmoves);
+
+	// Fullmove counter
+	fen += " " + std::to_string(fullmoves);
+
+	return fen;
 }
 
 Move Position::find_move(const std::string &movestr) const {

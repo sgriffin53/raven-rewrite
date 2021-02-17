@@ -1,3 +1,4 @@
+#include "fen.hpp"
 #include "ischeck.hpp"
 #include "kingpos.hpp"
 #include "move_string.hpp"
@@ -13,5 +14,7 @@ int main() {
 	std::cout << "isCheck: " << test::isCheck() << "\n";
 	std::cout << "Kingpos: " << test::kingPos() << "\n";
 	std::cout << "Move::string(): " << test::moveString() << "\n";
+	std::cout << "FEN: " << test::fen() << "\n";
+
 	return 0;
 }
